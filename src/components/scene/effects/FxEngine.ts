@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import type { QualityTier, StageLayout } from '@/types/scene';
 import { easeInOut, easeOut, easeOutExpo, ringOffset } from '@/lib/animationTokens';
+import { SCENE_COUNT } from '@/lib/sceneConfig';
 import { BLUR_FRAG, COMPOSITE_FRAG, DOWN_FRAG, FULLSCREEN_VERT, FX_FRAG } from './shared/shaders';
 
 type Ease = (t: number) => number;
@@ -30,7 +31,11 @@ const SCENE_TINTS: [number, number, number][] = [
   [0.13, 0.85, 0.72], // breeze
   [1.0, 0.35, 0.65], // bloom
   [1.0, 0.32, 0.16], // ember
+  [0.6, 0.48, 1.0], // night
+  [0.23, 0.48, 1.0], // rain
 ];
+
+const N = SCENE_COUNT;
 
 const TIER_SETTINGS: Record<Exclude<QualityTier, 'static'>, { dprCap: number; quality: number }> = {
   high: { dprCap: 1.5, quality: 1 },
@@ -132,9 +137,9 @@ export class FxEngine {
         uAudio: { value: 0 },
         uRes: { value: new THREE.Vector2(1, 1) },
         uPx: { value: 1 },
-        uReveal: { value: new THREE.Vector4() },
-        uAmb: { value: new THREE.Vector4() },
-        uCX: { value: new THREE.Vector4() },
+        uReveal: { value: new Float32Array(N) },
+        uAmb: { value: new Float32Array(N) },
+        uCX: { value: new Float32Array(N) },
         uCY: { value: 0 },
         uStageCX: { value: 0 },
         uScale: { value: 1 },
@@ -182,7 +187,7 @@ export class FxEngine {
     this.quad.frustumCulled = false;
     this.scene.add(this.quad);
 
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < N; i++) {
       const zero = { from: 0, to: 0, start: 0, delay: 0, dur: 1, ease: easeOut };
       this.reveal.push({ ...zero });
       this.amb.push({ ...zero });
@@ -241,7 +246,7 @@ export class FxEngine {
     const first = this.sceneIndex === -1;
     this.sceneIndex = index;
     const rm = this.reducedMotion;
-    for (let k = 0; k < 4; k++) {
+    for (let k = 0; k < N; k++) {
       const on = k === index;
       const r = this.reveal[k];
       const cur = tweenValue(r, now);
@@ -350,7 +355,7 @@ export class FxEngine {
 
     const pos = this.hooks.getPos();
     let animating = false;
-    for (let k = 0; k < 4; k++) {
+    for (let k = 0; k < N; k++) {
       if (!tweenDone(this.reveal[k], now) || !tweenDone(this.amb[k], now)) animating = true;
     }
     if (pos !== this.lastPos) animating = true;
@@ -401,27 +406,23 @@ export class FxEngine {
     const u = this.fxMat.uniforms;
     u.uTime.value = t;
     u.uAudio.value = this.audio;
-    const rv = u.uReveal.value as THREE.Vector4;
-    const am = u.uAmb.value as THREE.Vector4;
-    const cx = u.uCX.value as THREE.Vector4;
-    const r: number[] = [];
-    const a: number[] = [];
-    const x: number[] = [];
-    for (let k = 0; k < 4; k++) {
-      const o = ringOffset(k, pos);
+    const r = u.uReveal.value as Float32Array;
+    const a = u.uAmb.value as Float32Array;
+    const x = u.uCX.value as Float32Array;
+    let sum = 0;
+    for (let k = 0; k < N; k++) {
+      const o = ringOffset(k, pos, N);
       const vis = Math.min(1, Math.max(0, 2 - Math.abs(o) * 1.25));
-      r.push(tweenValue(this.reveal[k], now) * vis);
-      a.push(tweenValue(this.amb[k], now));
-      x.push(L.cx + o * L.gap);
+      r[k] = tweenValue(this.reveal[k], now) * vis;
+      a[k] = tweenValue(this.amb[k], now);
+      x[k] = L.cx + o * L.gap;
+      sum += a[k];
     }
-    rv.set(r[0], r[1], r[2], r[3]);
-    am.set(a[0], a[1], a[2], a[3]);
-    cx.set(x[0], x[1], x[2], x[3]);
+    sum = sum || 1;
 
     const tint = this.compMat.uniforms.uTint.value as THREE.Vector3;
-    const sum = a[0] + a[1] + a[2] + a[3] || 1;
     tint.set(0, 0, 0);
-    for (let k = 0; k < 4; k++) {
+    for (let k = 0; k < N; k++) {
       tint.x += (SCENE_TINTS[k][0] * a[k]) / sum;
       tint.y += (SCENE_TINTS[k][1] * a[k]) / sum;
       tint.z += (SCENE_TINTS[k][2] * a[k]) / sum;

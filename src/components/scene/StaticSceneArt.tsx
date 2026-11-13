@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useMemo } from 'react';
+import { memo, useMemo, type ComponentType } from 'react';
 import type { StageLayout } from '@/types/scene';
 import { SCENES } from '@/lib/sceneConfig';
 import { seededRandom } from '@/lib/seededRandom';
@@ -125,7 +125,80 @@ function BreezeArt() {
   );
 }
 
-const ART = [SolarArt, BreezeArt, BloomArt, EmberArt];
+function NightArt() {
+  const stars = useMemo(() => {
+    const rnd = seededRandom(23);
+    const out: { x: number; y: number; r: number; o: number }[] = [];
+    while (out.length < 46) {
+      const x = (rnd() - 0.5) * 760;
+      const y = (rnd() - 0.5) * 640 - 40;
+      if ((x / 120) ** 2 + (y / 170) ** 2 < 1) continue; // keep clear of the pill
+      const r2 = (v: number) => Math.round(v * 100) / 100;
+      out.push({ x: r2(x), y: r2(y), r: r2(0.8 + rnd() ** 2 * 1.6), o: r2(0.35 + rnd() * 0.6) });
+    }
+    return out;
+  }, []);
+  return (
+    <g>
+      <ellipse rx="260" ry="300" fill="url(#nightHalo)" />
+      <g filter="url(#midBlur)" opacity="0.7" mask="url(#auroraSides)">
+        <path d="M-320 -150 C-210 -185 -120 -140 -20 -178 C80 -215 190 -160 320 -196 L320 -400 L-320 -400 Z" fill="url(#auroraGrad)" />
+      </g>
+      <rect x="-154" y="-204" width="308" height="408" rx="154" fill="none" stroke="#C9B8FF" strokeWidth="1.5" opacity="0.35" />
+      <g fill="#F2EEFF">
+        {stars.map((st, i) => (
+          <circle key={i} cx={st.x} cy={st.y} r={st.r} opacity={st.o} />
+        ))}
+      </g>
+      <rect x="-95" y="-145" width="190" height="290" rx="95" fill="none" stroke="#EDE6FF" strokeWidth="4" filter="url(#softBlur)" />
+    </g>
+  );
+}
+
+function RainArt({ floor }: { floor: number }) {
+  const drops = useMemo(() => {
+    const rnd = seededRandom(31);
+    const r2 = (v: number) => Math.round(v * 100) / 100;
+    const out: { x1: number; y1: number; x2: number; y2: number; o: number }[] = [];
+    while (out.length < 70) {
+      const x = (rnd() - 0.5) * 720;
+      const y = -360 + rnd() * 600;
+      const len = 14 + rnd() * 24;
+      if ((x / 110) ** 2 + ((y + len / 2) / 160) ** 2 < 1) continue; // behind the glass
+      out.push({ x1: r2(x), y1: r2(y), x2: r2(x - len * 0.13), y2: r2(y + len), o: r2(0.25 + rnd() * 0.5) });
+    }
+    return out;
+  }, []);
+  const ripples = [
+    { x: -150, y: 10, r: 22 },
+    { x: 60, y: 22, r: 30 },
+    { x: 190, y: 8, r: 16 },
+  ];
+  return (
+    <g>
+      <ellipse rx="260" ry="300" fill="url(#rainHalo)" />
+      <g stroke="#9CC2FF" strokeWidth="1.2" strokeLinecap="round">
+        {drops.map((d, i) =>
+          d.y1 > floor - 4 ? null : (
+            <line key={i} x1={d.x1} y1={d.y1} x2={d.x2} y2={Math.min(d.y2, floor)} opacity={d.o} />
+          ),
+        )}
+      </g>
+      <g fill="none" stroke="#D6E8FF" strokeWidth="1.2">
+        {ripples.map((rp, i) => (
+          <g key={i} opacity="0.4">
+            <ellipse cx={rp.x} cy={floor + rp.y} rx={rp.r} ry={rp.r * 0.2} />
+            <ellipse cx={rp.x} cy={floor + rp.y} rx={rp.r * 0.55} ry={rp.r * 0.11} opacity="0.6" />
+          </g>
+        ))}
+      </g>
+      <rect x="-95" y="-145" width="190" height="290" rx="95" fill="none" stroke="#D6E8FF" strokeWidth="4" filter="url(#softBlur)" />
+    </g>
+  );
+}
+
+// ring order, same as SCENES
+const ART: ComponentType<{ floor: number }>[] = [SolarArt, BreezeArt, BloomArt, EmberArt, NightArt, RainArt];
 
 export const StaticSceneArt = memo(function StaticSceneArt({ layout, sceneIndex, visible }: { layout: StageLayout; sceneIndex: number; visible: boolean }) {
   const { width, height, cx, cy, scale, floorY } = layout;
@@ -158,6 +231,30 @@ export const StaticSceneArt = memo(function StaticSceneArt({ layout, sceneIndex,
           <stop offset="0.6" stopColor="#0E998D" stopOpacity="0.12" />
           <stop offset="1" stopColor="#031A16" stopOpacity="0" />
         </radialGradient>
+        <radialGradient id="nightHalo">
+          <stop offset="0" stopColor="#9C7CFF" stopOpacity="0.38" />
+          <stop offset="0.6" stopColor="#5B3FD6" stopOpacity="0.14" />
+          <stop offset="1" stopColor="#0D0820" stopOpacity="0" />
+        </radialGradient>
+        <radialGradient id="rainHalo">
+          <stop offset="0" stopColor="#3B7BFF" stopOpacity="0.36" />
+          <stop offset="0.6" stopColor="#1640C8" stopOpacity="0.14" />
+          <stop offset="1" stopColor="#020A1C" stopOpacity="0" />
+        </radialGradient>
+        <linearGradient id="auroraGrad" x1="0" y1="1" x2="0" y2="0">
+          <stop offset="0" stopColor="#EDE6FF" stopOpacity="0.55" />
+          <stop offset="0.2" stopColor="#9C7CFF" stopOpacity="0.45" />
+          <stop offset="1" stopColor="#4A54D1" stopOpacity="0" />
+        </linearGradient>
+        <linearGradient id="auroraSidesGrad" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stopColor="#fff" stopOpacity="0" />
+          <stop offset="0.3" stopColor="#fff" />
+          <stop offset="0.7" stopColor="#fff" />
+          <stop offset="1" stopColor="#fff" stopOpacity="0" />
+        </linearGradient>
+        <mask id="auroraSides" maskContentUnits="userSpaceOnUse">
+          <rect x="-340" y="-420" width="680" height="300" fill="url(#auroraSidesGrad)" />
+        </mask>
         <linearGradient id="flameGrad" x1="0" y1="1" x2="0" y2="0">
           <stop offset="0" stopColor="#FFF0B7" />
           <stop offset="0.35" stopColor="#FF6B28" />
@@ -174,7 +271,7 @@ export const StaticSceneArt = memo(function StaticSceneArt({ layout, sceneIndex,
         const Art = ART[i];
         return (
           <g key={s.id} className={styles.staticScene} data-active={i === sceneIndex} transform={`translate(${cx} ${cy}) scale(${scale})`}>
-            <Art />
+            <Art floor={(floorY - cy) / scale} />
           </g>
         );
       })}

@@ -7,7 +7,8 @@ import type { SceneConfig, SceneId, SessionMode, UserPrefs } from '@/types/scene
 const audio = (file: string) => `./audio/${file}`;
 
 /**
- * Carousel ring order: right of Solar is Breeze, then Bloom, then Ember, then back to Solar.
+ * Carousel ring order: right of Solar is Breeze, then Bloom, then Ember, then Night, then Rain,
+ * then back to Solar (dusk → night → pre-dawn rain → sunrise).
  * Audio paths are a convention — drop licensed loops into /public/audio (see README).
  */
 export const SCENES: readonly SceneConfig[] = [
@@ -82,6 +83,42 @@ export const SCENES: readonly SceneConfig[] = [
     cardBlobs: ['#B65FD6', '#F2A03A', '#FF5A4A'],
     sideTint: '#640B10',
     audioSrc: audio('ember.mp3'),
+  },
+  {
+    id: 'night',
+    index: 4,
+    title: 'Night',
+    caption: 'MOON · STILLNESS',
+    visualEffect: 'aurora',
+    palette: {
+      ambient: '#0D0820',
+      highlight: '#EDE6FF',
+      core: '#9C7CFF',
+      secondary: '#5B3FD6',
+      top: '#8E9CF2',
+      bottom: '#7442D0',
+    },
+    cardBlobs: ['#7F8EF2', '#C6A2FF', '#4E35B8'],
+    sideTint: '#2B1462',
+    audioSrc: audio('night.mp3'),
+  },
+  {
+    id: 'rain',
+    index: 5,
+    title: 'Rain',
+    caption: 'WATER · RENEWAL',
+    visualEffect: 'rain',
+    palette: {
+      ambient: '#020A1C',
+      highlight: '#D6E8FF',
+      core: '#3B7BFF',
+      secondary: '#1640C8',
+      top: '#4A78E0',
+      bottom: '#0D2A8C',
+    },
+    cardBlobs: ['#2F5BD6', '#6FA8FF', '#0A2478'],
+    sideTint: '#06194F',
+    audioSrc: audio('rain.mp3'),
   },
 ] as const;
 

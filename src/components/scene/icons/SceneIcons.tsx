@@ -60,6 +60,27 @@ export function EmberIcon() {
   );
 }
 
+export function NightIcon() {
+  return (
+    <svg {...common}>
+      <path d="M28.44 19.08A15 15 0 1 0 44.61 37.41 12.5 12.5 0 0 1 28.44 19.08z" />
+      <path d="M46 10.5v8M42 14.5h8" strokeWidth={1.8} />
+      <path d="M51.5 25.5v4M49.5 27.5h4" strokeWidth={1.6} opacity="0.75" />
+    </svg>
+  );
+}
+
+export function RainIcon() {
+  return (
+    <svg {...common}>
+      <path d="M20 38h25a9 9 0 0 0 1.5-17.9A12 12 0 0 0 23.3 22.6 8 8 0 0 0 20 38z" />
+      <path d="M25 45l-2.5 6" strokeWidth={2} />
+      <path d="M34 45l-2.5 6" strokeWidth={2} />
+      <path d="M43 45l-2.5 6" strokeWidth={2} />
+    </svg>
+  );
+}
+
 export function SceneIcon({ id }: { id: SceneId }) {
   switch (id) {
     case 'solar':
@@ -70,5 +91,9 @@ export function SceneIcon({ id }: { id: SceneId }) {
       return <BloomIcon />;
     case 'ember':
       return <EmberIcon />;
+    case 'night':
+      return <NightIcon />;
+    case 'rain':
+      return <RainIcon />;
   }
 }

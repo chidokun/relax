@@ -1,6 +1,6 @@
 # AURA — Immersive Ambient Music Player
 
-A single-screen ambient player: a carousel of four soundscapes (Solar, Breeze, Bloom, Ember),
+A single-screen ambient player: a carousel of six soundscapes (Solar, Breeze, Bloom, Ember, Night, Rain),
 each with its own procedural light scene rendered in WebGL, a glossy floor reflection, and a
 quiet player dock (play/pause, scene navigation, session timer, mode, volume, settings).
 
@@ -47,6 +47,8 @@ public/audio/solar.mp3
 public/audio/breeze.mp3
 public/audio/bloom.mp3
 public/audio/ember.mp3
+public/audio/night.mp3
+public/audio/rain.mp3
 ```
 
 Paths are configured per scene in `src/lib/sceneConfig.ts` (`audioSrc`). Any format the browser
@@ -61,7 +63,7 @@ gesture.
 
 | URL | Effect |
 |---|---|
-| `/?scene=bloom` | open on a given scene (`solar`, `breeze`, `bloom`, `ember`) |
+| `/?scene=bloom` | open on a given scene (`solar`, `breeze`, `bloom`, `ember`, `night`, `rain`) |
 | `/?quality=static` | force the no-WebGL fallback (SVG artwork) |
 | `/?quality=low` / `medium` / `high` | force a renderer tier |
 
@@ -77,7 +79,7 @@ they can be switched off in Settings.
 
 - **Next.js 16 (App Router) + React 19 + TypeScript**, CSS Modules for layout and tokens.
 - **Motion** drives the carousel position (one motion value) and overlay transitions.
-- **Three.js** renders the light field: one fullscreen shader for all four scenes, crossfaded
+- **Three.js** renders the light field: one fullscreen shader for all six scenes, crossfaded
   by per-scene uniforms, followed by bloom/haze blur passes and a composite pass that adds the
   floor reflection, horizon line, vignette, tone-mapping and dithering.
   - Solar — ~260 tapered rays in three layers launched from the capsule outline, 3-tier rim,
@@ -86,6 +88,12 @@ they can be switched off in Settings.
     colour ramp, buoyant sparks with lifetimes.
   - Bloom — 13 parametric lotus petals (back / mid / base layers) with fresnel fill and bright
     rims, staggered unfolding, out-of-phase sway.
+  - Night — violet aurora curtains with a wavering bright hem above the capsule, a thin
+    moon-halo ring, a two-depth twinkling star field that fills in on reveal, and an occasional
+    meteor.
+  - Rain — deep-blue rain in three wind-slanted parallax layers (hidden behind the glass, lit
+    by the capsule), droplets running down the outline, ripples on the glossy floor, a low
+    drifting mist and rare soft sheet lightning in the cloud bank.
   - Breeze — potential-flow streamlines around the capsule with noise and local swirls; comet
     highlights travel along the stream, lines draw on during reveal.
 - Each scene's light follows its own pill during a slide, so the outgoing scene leaves with its
@@ -107,6 +115,7 @@ src/
       effects/
         FxEngine.ts       renderer, render targets, tweens, adaptive quality, rAF loop
         SolarEffect.glsl.ts  EmberEffect.glsl.ts  BloomEffect.glsl.ts  BreezeEffect.glsl.ts
+                          NightEffect.glsl.ts  RainEffect.glsl.ts
         shared/common.glsl.ts  shared/shaders.ts
     player/               PlayerDock, Overlay (popover / bottom sheet), Panels, ToastLayer, icons
   hooks/                  useSceneCarousel, useAudioPlayer, useSessionTimer, useStageLayout,

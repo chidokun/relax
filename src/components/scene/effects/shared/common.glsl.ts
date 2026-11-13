@@ -75,4 +75,16 @@ const vec3 EMBER_AMB  = vec3(0.106, 0.020, 0.024);
 const vec3 EMBER_HI   = vec3(1.000, 0.941, 0.718);
 const vec3 EMBER_CORE = vec3(1.000, 0.420, 0.157);
 const vec3 EMBER_SEC  = vec3(0.827, 0.110, 0.133);
+
+const vec3 NIGHT_AMB  = vec3(0.040, 0.026, 0.100);
+const vec3 NIGHT_HI   = vec3(0.929, 0.902, 1.000);
+const vec3 NIGHT_CORE = vec3(0.612, 0.486, 1.000);
+const vec3 NIGHT_SEC  = vec3(0.357, 0.247, 0.839);
+const vec3 NIGHT_TOP  = vec3(0.290, 0.330, 0.820);
+
+const vec3 RAIN_AMB  = vec3(0.008, 0.035, 0.110);
+const vec3 RAIN_HI   = vec3(0.839, 0.910, 1.000);
+const vec3 RAIN_CORE = vec3(0.231, 0.482, 1.000);
+const vec3 RAIN_SEC  = vec3(0.086, 0.251, 0.784);
+const vec3 RAIN_TOP  = vec3(0.102, 0.173, 0.431);
 `;

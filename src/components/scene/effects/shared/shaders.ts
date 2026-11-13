@@ -3,6 +3,9 @@ import { SOLAR_GLSL } from '../SolarEffect.glsl';
 import { EMBER_GLSL } from '../EmberEffect.glsl';
 import { BLOOM_GLSL } from '../BloomEffect.glsl';
 import { BREEZE_GLSL } from '../BreezeEffect.glsl';
+import { NIGHT_GLSL } from '../NightEffect.glsl';
+import { RAIN_GLSL } from '../RainEffect.glsl';
+import { SCENE_COUNT } from '@/lib/sceneConfig';
 
 export const FULLSCREEN_VERT = /* glsl */ `
 void main() {
@@ -20,9 +23,10 @@ ${COMMON_GLSL}
 
 uniform vec2 uRes;        // stage size in CSS px
 uniform float uPx;        // render-target pixels per CSS px
-uniform vec4 uReveal;     // solar, breeze, bloom, ember
-uniform vec4 uAmb;        // ambient tint weights
-uniform vec4 uCX;         // per-scene centre x (follows its pill), CSS px
+// one entry per scene, in ring order: solar, breeze, bloom, ember, night, rain
+uniform float uReveal[${SCENE_COUNT}];
+uniform float uAmb[${SCENE_COUNT}];   // ambient tint weights
+uniform float uCX[${SCENE_COUNT}];    // per-scene centre x (follows its pill), CSS px
 uniform float uCY;
 uniform float uStageCX;
 uniform float uScale;
@@ -33,6 +37,8 @@ ${SOLAR_GLSL}
 ${EMBER_GLSL}
 ${BLOOM_GLSL}
 ${BREEZE_GLSL}
+${NIGHT_GLSL}
+${RAIN_GLSL}
 
 vec3 backdrop(vec2 px) {
   vec3 base = vec3(0.016, 0.016, 0.021);
@@ -41,8 +47,8 @@ vec3 backdrop(vec2 px) {
   float r2 = dot(de, de);
   float g1 = exp(-r2 / (2.0 * 230.0 * 230.0));
   float g2 = exp(-r2 / (2.0 * 520.0 * 520.0));
-  vec3 amb = uAmb.x * SOLAR_AMB + uAmb.y * BREEZE_AMB + uAmb.z * BLOOM_AMB + uAmb.w * EMBER_AMB;
-  vec3 core = uAmb.x * SOLAR_SEC + uAmb.y * BREEZE_SEC + uAmb.z * BLOOM_SEC + uAmb.w * EMBER_SEC;
+  vec3 amb = uAmb[0] * SOLAR_AMB + uAmb[1] * BREEZE_AMB + uAmb[2] * BLOOM_AMB + uAmb[3] * EMBER_AMB + uAmb[4] * NIGHT_AMB + uAmb[5] * RAIN_AMB;
+  vec3 core = uAmb[0] * SOLAR_SEC + uAmb[1] * BREEZE_SEC + uAmb[2] * BLOOM_SEC + uAmb[3] * EMBER_SEC + uAmb[4] * NIGHT_SEC + uAmb[5] * RAIN_SEC;
   vec3 c = base + amb * g2 * 1.7 + core * g1 * 0.07;
   // faint vertical light column above the stage, like a soft overhead spot
   float column = exp(-sq(d.x / 300.0)) * (1.0 - smoothstep(-200.0, 420.0, d.y));
@@ -56,10 +62,12 @@ void main() {
   vec3 col = backdrop(px);
   float t = uTime;
 
-  if (uReveal.x > 0.002) solarFx(col, vec2(px.x - uCX.x, uCY - px.y) / uScale, t, uReveal.x);
-  if (uReveal.y > 0.002) breezeFx(col, vec2(px.x - uCX.y, uCY - px.y) / uScale, t, uReveal.y);
-  if (uReveal.z > 0.002) bloomFx(col, vec2(px.x - uCX.z, uCY - px.y) / uScale, t, uReveal.z);
-  if (uReveal.w > 0.002) emberFx(col, vec2(px.x - uCX.w, uCY - px.y) / uScale, t, uReveal.w);
+  if (uReveal[0] > 0.002) solarFx(col, vec2(px.x - uCX[0], uCY - px.y) / uScale, t, uReveal[0]);
+  if (uReveal[1] > 0.002) breezeFx(col, vec2(px.x - uCX[1], uCY - px.y) / uScale, t, uReveal[1]);
+  if (uReveal[2] > 0.002) bloomFx(col, vec2(px.x - uCX[2], uCY - px.y) / uScale, t, uReveal[2]);
+  if (uReveal[3] > 0.002) emberFx(col, vec2(px.x - uCX[3], uCY - px.y) / uScale, t, uReveal[3]);
+  if (uReveal[4] > 0.002) nightFx(col, vec2(px.x - uCX[4], uCY - px.y) / uScale, t, uReveal[4]);
+  if (uReveal[5] > 0.002) rainFx(col, vec2(px.x - uCX[5], uCY - px.y) / uScale, t, uReveal[5]);
 
   // soft crop at the viewport edges (never a hard rectangular clip)
   vec2 e = min(px, uRes - px);

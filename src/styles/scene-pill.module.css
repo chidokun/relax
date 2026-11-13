@@ -30,6 +30,36 @@
   outline-offset: 0;
 }
 
+/* ---------- hover: glow, tilt, lift ---------- */
+
+/* scene-coloured light spilling around the card (outside the clipped shell) */
+.glow {
+  position: absolute;
+  inset: -14% -34%;
+  border-radius: 999px;
+  background: radial-gradient(
+    closest-side,
+    color-mix(in oklab, var(--core) 70%, transparent) 0%,
+    color-mix(in oklab, var(--secondary) 30%, transparent) 55%,
+    transparent 100%
+  );
+  filter: blur(calc(14px * var(--ps, 1)));
+  opacity: 0;
+  transform: translateY(10%) scale(0.9);
+  transition:
+    opacity 700ms var(--ease-out-expo),
+    transform 900ms var(--ease-out-expo);
+  pointer-events: none;
+}
+
+.tilt {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: transform 700ms var(--ease-out-expo);
+}
+
 .shell {
   position: absolute;
   inset: 0;
@@ -38,26 +68,113 @@
   isolation: isolate;
   transform: translateZ(0);
   transition:
-    transform var(--motion-short) ease-out,
-    filter var(--motion-short) ease-out;
+    transform 600ms var(--ease-out-expo),
+    filter 600ms var(--ease-out-expo);
 }
 
-.pill[data-active='false']:hover .shell {
-  transform: translateY(-3px);
-  filter: brightness(1.07);
+.pill[data-hover] .tilt {
+  transition-duration: 260ms;
+}
+
+.pill[data-active='false'][data-hover] .glow,
+.pill[data-active='false']:focus-visible .glow {
+  opacity: 0.85;
+  transform: none;
+}
+
+.pill[data-active='true'][data-hover] .glow {
+  opacity: 0.22;
+  transform: none;
+}
+
+.pill[data-active='false'][data-hover] .shell,
+.pill[data-active='false']:focus-visible .shell {
+  transform: translateY(-6px) scale(1.02);
+  filter: brightness(1.08) saturate(1.1);
 }
 
 .pill[data-active='false']:active .shell {
-  transform: scale(0.98);
-  transition-duration: 100ms;
+  transform: translateY(-2px) scale(0.985);
+  transition-duration: 120ms;
 }
 
 .pill[data-active='true'] .shell {
   animation: breathe 5.2s ease-in-out infinite;
 }
 
-.pill[data-active='true']:hover .rimLit {
-  filter: brightness(1.04);
+.pill[data-active='true'][data-hover] .rimLit {
+  filter: brightness(1.08);
+}
+
+/* inactive card previews its scene: colour rises from the sunk tint at the bottom */
+.preview {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: translateY(22%);
+  background:
+    radial-gradient(70% 42% at 28% 76%, color-mix(in oklab, var(--blob1) 75%, transparent) 0%, transparent 100%),
+    radial-gradient(62% 38% at 76% 60%, color-mix(in oklab, var(--blob2) 60%, transparent) 0%, transparent 100%),
+    radial-gradient(120% 62% at 50% 108%, var(--bottom) 0%, color-mix(in oklab, var(--secondary) 40%, transparent) 55%, transparent 100%);
+  mix-blend-mode: screen;
+  transition:
+    opacity 700ms var(--ease-out-expo),
+    transform 1100ms var(--ease-out-expo);
+}
+
+.pill[data-active='false'][data-hover] .preview,
+.pill[data-active='false']:focus-visible .preview {
+  opacity: 0.8;
+  transform: none;
+}
+
+/* soft light under the cursor */
+.spot {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background: radial-gradient(
+    calc(150px * var(--ps, 1)) circle at var(--mx, 50%) var(--my, 30%),
+    rgba(255, 255, 255, 0.26) 0%,
+    rgba(255, 255, 255, 0.08) 35%,
+    transparent 100%
+  );
+  mix-blend-mode: screen;
+  transition: opacity 400ms ease-out;
+  pointer-events: none;
+}
+
+/* stretch of rim lit by the cursor */
+.rimSpot {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.5px;
+  opacity: 0;
+  background: radial-gradient(
+    calc(130px * var(--ps, 1)) circle at var(--mx, 50%) var(--my, 30%),
+    var(--highlight) 0%,
+    color-mix(in oklab, var(--core) 70%, transparent) 30%,
+    transparent 100%
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box exclude,
+    linear-gradient(#000 0 0);
+  transition: opacity 400ms ease-out;
+  pointer-events: none;
+}
+
+.pill[data-hover] .spot,
+.pill[data-hover] .rimSpot {
+  opacity: 1;
+}
+
+.pill[data-active='true'][data-hover] .spot {
+  opacity: 0.6;
 }
 
 @keyframes breathe {
@@ -245,6 +362,110 @@
   letter-spacing: 0.26em;
   opacity: 0.72;
   white-space: nowrap;
+  transition:
+    letter-spacing 700ms var(--ease-out-expo),
+    opacity 400ms ease-out;
+}
+
+.pill[data-hover] .caption {
+  letter-spacing: 0.34em;
+  opacity: 0.9;
+}
+
+/* ---------- per-scene icon gestures on hover ---------- */
+
+.icon svg {
+  transition: transform 1200ms var(--ease-out-expo);
+}
+
+.pill[data-scene='solar'][data-hover] .icon svg {
+  transform: rotate(45deg) scale(1.08);
+}
+
+.pill[data-scene='breeze'][data-hover] .icon svg {
+  animation: gust 1.8s ease-in-out infinite;
+}
+
+.pill[data-scene='bloom'][data-hover] .icon svg {
+  transform: rotate(30deg) scale(1.12);
+}
+
+.pill[data-scene='ember'][data-hover] .icon svg {
+  transform-origin: 50% 70%;
+  animation: flicker 0.9s ease-in-out infinite alternate;
+}
+
+.pill[data-scene='night'][data-hover] .icon svg {
+  transform: rotate(-14deg);
+}
+
+.pill[data-scene='night'][data-hover] .icon svg path:nth-child(n + 2) {
+  animation: twinkle 1.4s ease-in-out infinite alternate;
+}
+
+.pill[data-scene='night'][data-hover] .icon svg path:nth-child(3) {
+  animation-delay: -0.7s;
+}
+
+.pill[data-scene='rain'][data-hover] .icon svg {
+  transform: translateY(-1.5px);
+}
+
+.pill[data-scene='rain'][data-hover] .icon svg path:nth-child(n + 2) {
+  animation: drizzle 0.9s cubic-bezier(0.55, 0, 0.9, 0.6) infinite;
+}
+
+.pill[data-scene='rain'][data-hover] .icon svg path:nth-child(3) {
+  animation-delay: -0.3s;
+}
+
+.pill[data-scene='rain'][data-hover] .icon svg path:nth-child(4) {
+  animation-delay: -0.6s;
+}
+
+@keyframes gust {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  40% {
+    transform: translateX(3.5px);
+  }
+  70% {
+    transform: translateX(-1px);
+  }
+}
+
+@keyframes flicker {
+  from {
+    transform: scale(1, 1);
+  }
+  to {
+    transform: scale(0.97, 1.09);
+  }
+}
+
+@keyframes drizzle {
+  0% {
+    transform: translate(1px, -4px);
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-1.5px, 5px);
+    opacity: 0;
+  }
+}
+
+@keyframes twinkle {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0.2;
+  }
 }
 
 @media (prefers-contrast: more) {
@@ -259,12 +480,25 @@
 
 @media (prefers-reduced-motion: reduce) {
   .shell,
-  .blob {
+  .blob,
+  .icon svg,
+  .icon svg path {
     animation: none !important;
+  }
+  .tilt,
+  .icon svg {
+    transform: none !important;
   }
 }
 
 :global(.aura-reduced) .shell,
-:global(.aura-reduced) .blob {
+:global(.aura-reduced) .blob,
+:global(.aura-reduced) .icon svg,
+:global(.aura-reduced) .icon svg path {
   animation: none !important;
+}
+
+:global(.aura-reduced) .tilt,
+:global(.aura-reduced) .icon svg {
+  transform: none !important;
 }

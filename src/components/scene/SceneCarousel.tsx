@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { MotionValue } from 'motion/react';
 import type { StageLayout } from '@/types/scene';
 import { SCENES, SCENE_COUNT } from '@/lib/sceneConfig';
@@ -40,6 +40,7 @@ function writeVars(el: HTMLElement | null, k: number, pos: number) {
 export function SceneCarousel({ pos, target, sceneIndex, layout, onSelect, onStep, suppressClick, dragHandlers }: Props) {
   const pillRefs = useRef<(HTMLElement | null)[]>([]);
   const reflRefs = useRef<(HTMLElement | null)[]>([]);
+  const [hovered, setHovered] = useState(-1);
 
   useEffect(() => {
     const apply = (v: number) => {
@@ -67,7 +68,7 @@ export function SceneCarousel({ pos, target, sceneIndex, layout, onSelect, onSte
       <div className={styles.reflection} aria-hidden="true">
         <div className={styles.reflectionFlip}>
           {SCENES.map((s, k) => (
-            <ScenePill key={s.id} ref={(el) => void (reflRefs.current[k] = el)} scene={s} active={k === sceneIndex} focusable={false} reflection />
+            <ScenePill key={s.id} ref={(el) => void (reflRefs.current[k] = el)} scene={s} active={k === sceneIndex} focusable={false} reflection hovered={k === hovered} />
           ))}
         </div>
       </div>
@@ -92,6 +93,8 @@ export function SceneCarousel({ pos, target, sceneIndex, layout, onSelect, onSte
               scene={s}
               active={k === sceneIndex}
               focusable={Math.abs(off) <= 1}
+              hovered={k === hovered}
+              onHover={(on) => setHovered((h) => (on ? k : h === k ? -1 : h))}
               onSelect={() => {
                 if (suppressClick.current) return;
                 onSelect(k);

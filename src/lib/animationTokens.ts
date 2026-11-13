@@ -11,7 +11,7 @@ export const MOTION = {
 } as const;
 
 /** Signed ring offset of item k relative to a continuous carousel position, in [-n/2, n/2). */
-export function ringOffset(k: number, pos: number, n = 4): number {
+export function ringOffset(k: number, pos: number, n: number): number {
   const half = n / 2;
   return ((((k - pos + half) % n) + n) % n) - half;
 }
