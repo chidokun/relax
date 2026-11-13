@@ -56,8 +56,9 @@
   position: absolute;
   inset: 0;
   border-radius: 999px;
-  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
-  transition: transform 700ms var(--ease-out-expo);
+  /* every term is spring-driven from lib/liquidCard: no CSS transition */
+  transform: perspective(900px) translate3d(var(--px, 0px), var(--py, 0px), 0) rotateX(var(--rx, 0deg))
+    rotateY(var(--ry, 0deg)) scale(var(--sx, 1), var(--sy, 1));
 }
 
 .shell {
@@ -68,12 +69,11 @@
   isolation: isolate;
   transform: translateZ(0);
   transition:
-    transform 600ms var(--ease-out-expo),
+    transform 1000ms var(--ease-out-expo),
     filter 600ms var(--ease-out-expo);
-}
-
-.pill[data-hover] .tilt {
-  transition-duration: 260ms;
+  transition:
+    transform 1000ms var(--ease-spring),
+    filter 600ms var(--ease-out-expo);
 }
 
 .pill[data-active='false'][data-hover] .glow,
@@ -93,11 +93,6 @@
   filter: brightness(1.08) saturate(1.1);
 }
 
-.pill[data-active='false']:active .shell {
-  transform: translateY(-2px) scale(0.985);
-  transition-duration: 120ms;
-}
-
 .pill[data-active='true'] .shell {
   animation: breathe 5.2s ease-in-out infinite;
 }
@@ -112,10 +107,15 @@
   inset: 0;
   opacity: 0;
   transform: translateY(22%);
+  /* the colour sloshes toward the pointer, lagging like a liquid. Only the gradient centres
+     move (front blobs most, the base pool least) so the layer always covers the capsule edge
+     to edge: shifting the whole layer would bare a strip of black on the far side. */
+  --sx1: calc(var(--lx, 0px) * -3);
+  --sy1: calc(var(--ly, 0px) * -3);
   background:
-    radial-gradient(70% 42% at 28% 76%, color-mix(in oklab, var(--blob1) 75%, transparent) 0%, transparent 100%),
-    radial-gradient(62% 38% at 76% 60%, color-mix(in oklab, var(--blob2) 60%, transparent) 0%, transparent 100%),
-    radial-gradient(120% 62% at 50% 108%, var(--bottom) 0%, color-mix(in oklab, var(--secondary) 40%, transparent) 55%, transparent 100%);
+    radial-gradient(70% 42% at calc(28% + var(--sx1)) calc(76% + var(--sy1)), color-mix(in oklab, var(--blob1) 75%, transparent) 0%, transparent 100%),
+    radial-gradient(62% 38% at calc(76% + var(--sx1) * 1.4) calc(60% + var(--sy1) * 1.4), color-mix(in oklab, var(--blob2) 60%, transparent) 0%, transparent 100%),
+    radial-gradient(120% 62% at calc(50% + var(--sx1) * 0.5) 108%, var(--bottom) 0%, color-mix(in oklab, var(--secondary) 40%, transparent) 55%, transparent 100%);
   mix-blend-mode: screen;
   transition:
     opacity 700ms var(--ease-out-expo),
@@ -126,6 +126,35 @@
 .pill[data-active='false']:focus-visible .preview {
   opacity: 0.8;
   transform: none;
+}
+
+/* slow, wobbly bead of light that trails the cursor and stretches along its own motion */
+.liquid {
+  position: absolute;
+  left: var(--qx, 50%);
+  top: var(--qy, 35%);
+  width: 78%;
+  aspect-ratio: 1.15;
+  border-radius: 50%;
+  opacity: 0;
+  background: radial-gradient(
+    closest-side,
+    rgba(255, 255, 255, 0.2) 0%,
+    color-mix(in oklab, var(--highlight) 22%, transparent) 45%,
+    transparent 100%
+  );
+  transform: translate(-50%, -50%) rotate(var(--qa, 0rad)) scale(var(--qs, 1), calc(2 - var(--qs, 1)));
+  mix-blend-mode: screen;
+  transition: opacity 600ms ease-out;
+  pointer-events: none;
+}
+
+.pill[data-hover] .liquid {
+  opacity: 1;
+}
+
+.pill[data-active='true'][data-hover] .liquid {
+  opacity: 0.55;
 }
 
 /* soft light under the cursor */
@@ -233,6 +262,7 @@
   position: absolute;
   border-radius: 50%;
   opacity: 0.85;
+  translate: calc(var(--lx, 0px) * -2.4) calc(var(--ly, 0px) * -2.4);
   will-change: transform;
 }
 
@@ -319,7 +349,112 @@
   position: absolute;
   inset: 0;
   color: rgba(255, 255, 255, 0.96);
+  /* parallax: text floats above the liquid, drifting against it */
+  translate: var(--lx, 0px) var(--ly, 0px);
   pointer-events: none;
+}
+
+/* ---------- click: light flaring from the press point ---------- */
+
+.flash,
+.ring,
+.bloom {
+  position: absolute;
+  left: var(--fx, 50%);
+  top: var(--fy, 50%);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(0.1);
+  opacity: 0;
+}
+
+.flash {
+  z-index: 3;
+  width: calc(var(--pill-w) * 1.7);
+  background: radial-gradient(
+    closest-side,
+    rgba(255, 255, 255, 0.95) 0%,
+    color-mix(in oklab, var(--highlight) 80%, transparent) 14%,
+    color-mix(in oklab, var(--core) 45%, transparent) 38%,
+    transparent 72%
+  );
+  mix-blend-mode: screen;
+  mix-blend-mode: plus-lighter;
+  animation: flare 760ms linear forwards;
+}
+
+.ring {
+  z-index: 3;
+  width: calc(var(--pill-w) * 1.5);
+  box-shadow:
+    inset 0 0 0 calc(2px * var(--ps, 1)) color-mix(in oklab, var(--highlight) 70%, white),
+    inset 0 0 calc(18px * var(--ps, 1)) calc(3px * var(--ps, 1)) color-mix(in oklab, var(--highlight) 70%, transparent),
+    0 0 calc(12px * var(--ps, 1)) calc(1px * var(--ps, 1)) color-mix(in oklab, var(--highlight) 55%, transparent);
+  mix-blend-mode: screen;
+  mix-blend-mode: plus-lighter;
+  animation: ripple 900ms cubic-bezier(0.2, 0.7, 0.25, 1) forwards;
+}
+
+/* spill of the same light outside the capsule */
+.bloom {
+  z-index: 2;
+  width: calc(var(--pill-w) * 1.1);
+  background: radial-gradient(
+    closest-side,
+    color-mix(in oklab, var(--highlight) 70%, transparent) 0%,
+    color-mix(in oklab, var(--core) 40%, transparent) 45%,
+    transparent 100%
+  );
+  filter: blur(calc(16px * var(--ps, 1)));
+  mix-blend-mode: screen;
+  mix-blend-mode: plus-lighter;
+  animation: bloom 950ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes flare {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.06);
+    animation-timing-function: cubic-bezier(0.2, 0.8, 0.3, 1);
+  }
+  10% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(0.32);
+    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes ripple {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(0.04);
+  }
+  45% {
+    opacity: 0.75;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes bloom {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.3);
+  }
+  18% {
+    opacity: 0.85;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.35);
+  }
 }
 
 .index {
@@ -591,6 +726,23 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .flash,
+  .bloom {
+    animation: fade 380ms ease-out forwards !important;
+    transform: translate(-50%, -50%) scale(0.6) !important;
+  }
+  .ring {
+    display: none;
+  }
+  .liquid,
+  .content,
+  .blob {
+    translate: none;
+  }
+  .preview {
+    --sx1: 0px;
+    --sy1: 0px;
+  }
   .shell,
   .blob,
   .icon svg,
@@ -601,6 +753,34 @@
   .tilt,
   .icon svg {
     transform: none !important;
+  }
+}
+
+:global(.relax-reduced) .flash,
+:global(.relax-reduced) .bloom {
+  animation: fade 380ms ease-out forwards !important;
+  transform: translate(-50%, -50%) scale(0.6) !important;
+}
+
+:global(.relax-reduced) .ring {
+  display: none;
+}
+
+:global(.relax-reduced) :is(.liquid, .content, .blob) {
+  translate: none;
+}
+
+:global(.relax-reduced) .preview {
+  --sx1: 0px;
+  --sy1: 0px;
+}
+
+@keyframes fade {
+  0% {
+    opacity: 0.7;
+  }
+  100% {
+    opacity: 0;
   }
 }
 

@@ -94,6 +94,7 @@ export function SceneCarousel({ pos, target, sceneIndex, layout, onSelect, onSte
               active={k === sceneIndex}
               focusable={Math.abs(off) <= 1}
               hovered={k === hovered}
+              getMirror={() => reflRefs.current[k]}
               onHover={(on) => setHovered((h) => (on ? k : h === k ? -1 : h))}
               onSelect={() => {
                 if (suppressClick.current) return;

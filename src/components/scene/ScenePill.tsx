@@ -1,7 +1,8 @@
 'use client';
 
-import { forwardRef } from 'react';
+import { forwardRef, useCallback, useEffect, useRef } from 'react';
 import type { SceneConfig } from '@/types/scene';
+import { createLiquidCard, type LiquidCard } from '@/lib/liquidCard';
 import { SceneIcon } from './icons/SceneIcons';
 import styles from '@/styles/scene-pill.module.css';
 
@@ -14,6 +15,8 @@ interface Props {
   hovered?: boolean;
   onHover?: (on: boolean) => void;
   onSelect?: () => void;
+  /** Floor reflection of this card: receives the same liquid variables and click flashes. */
+  getMirror?: () => HTMLElement | null;
 }
 
 export function sceneCssVars(scene: SceneConfig): React.CSSProperties {
@@ -31,34 +34,47 @@ export function sceneCssVars(scene: SceneConfig): React.CSSProperties {
   };
 }
 
-/** Cursor position (spotlight) and tilt go straight to CSS variables: no React render per move. */
-function trackPointer(e: React.PointerEvent<HTMLElement>) {
-  const el = e.currentTarget;
-  const r = el.getBoundingClientRect();
-  const x = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width));
-  const y = Math.min(1, Math.max(0, (e.clientY - r.top) / r.height));
-  const s = el.style;
-  s.setProperty('--mx', `${(x * 100).toFixed(1)}%`);
-  s.setProperty('--my', `${(y * 100).toFixed(1)}%`);
-  s.setProperty('--rx', `${((0.5 - y) * 7).toFixed(2)}deg`);
-  s.setProperty('--ry', `${((x - 0.5) * 9).toFixed(2)}deg`);
-}
-
-function resetPointer(el: HTMLElement) {
-  el.style.setProperty('--rx', '0deg');
-  el.style.setProperty('--ry', '0deg');
-}
-
 /**
  * Capsule card. Position/activeness come from CSS variables (--o, --abso, --a, --vis)
  * written straight to the DOM by the carousel on every motion frame — no React renders.
  * Hover (mouse/pen only) wakes the scene's colour from the bottom, adds a cursor spotlight
- * and rim light, a slight 3D tilt and a per-scene icon gesture.
+ * and rim light, and a per-scene icon gesture; tilt, magnetic pull, squash/stretch, the
+ * sloshing liquid highlight, the press and the click flash are spring-driven (lib/liquidCard).
  */
 export const ScenePill = forwardRef<HTMLElement, Props>(function ScenePill(
-  { scene, active, focusable, reflection, hovered, onHover, onSelect },
+  { scene, active, focusable, reflection, hovered, onHover, onSelect, getMirror },
   ref,
 ) {
+  const liquid = useRef<LiquidCard | null>(null);
+  const mirrorRef = useRef(getMirror);
+  const outerRef = useRef(ref);
+  useEffect(() => {
+    mirrorRef.current = getMirror;
+    outerRef.current = ref;
+  });
+
+  // stable: the parent's inline ref callback changes every render, the driver must not
+  const setRef = useCallback(
+    (el: HTMLElement | null) => {
+      const r = outerRef.current;
+      if (typeof r === 'function') r(el);
+      else if (r) r.current = el;
+      liquid.current?.destroy();
+      liquid.current =
+        el && !reflection
+          ? createLiquidCard(el, () => mirrorRef.current?.() ?? null, {
+              shell: styles.shell,
+              flash: styles.flash,
+              ring: styles.ring,
+              bloom: styles.bloom,
+            })
+          : null;
+    },
+    [reflection],
+  );
+
+  useEffect(() => () => liquid.current?.destroy(), []);
+
   const body = (
     <>
       <span className={styles.glow} />
@@ -72,6 +88,7 @@ export const ScenePill = forwardRef<HTMLElement, Props>(function ScenePill(
             <span className={`${styles.blob} ${styles.b3}`} />
           </span>
           <span className={styles.sheen} />
+          <span className={styles.liquid} />
           <span className={styles.spot} />
           <span className={styles.rimDim} />
           <span className={styles.rimLit} />
@@ -109,7 +126,7 @@ export const ScenePill = forwardRef<HTMLElement, Props>(function ScenePill(
 
   return (
     <button
-      ref={ref as React.Ref<HTMLButtonElement>}
+      ref={setRef}
       type="button"
       className={styles.pill}
       data-active={active}
@@ -120,17 +137,22 @@ export const ScenePill = forwardRef<HTMLElement, Props>(function ScenePill(
       aria-current={active ? 'true' : undefined}
       aria-hidden={focusable ? undefined : true}
       tabIndex={focusable ? 0 : -1}
-      onClick={onSelect}
+      onClick={(e) => {
+        liquid.current?.flash(e);
+        onSelect?.();
+      }}
+      onPointerDown={(e) => liquid.current?.press(e)}
       onPointerEnter={(e) => {
         if (e.pointerType === 'touch') return;
-        trackPointer(e);
+        liquid.current?.enter(e);
         onHover?.(true);
       }}
       onPointerMove={(e) => {
-        if (e.pointerType !== 'touch') trackPointer(e);
+        if (e.pointerType !== 'touch') liquid.current?.move(e);
       }}
       onPointerLeave={(e) => {
-        resetPointer(e.currentTarget);
+        if (e.pointerType === 'touch') return;
+        liquid.current?.leave();
         onHover?.(false);
       }}
     >

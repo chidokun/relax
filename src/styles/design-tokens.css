@@ -17,6 +17,8 @@
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-hero: cubic-bezier(0.22, 0.78, 0.17, 1);
   --ease-overlay: cubic-bezier(0.22, 1, 0.36, 1);
+  /* underdamped spring (ζ 0.5): ~16% overshoot, settles with a soft wobble */
+  --ease-spring: linear(0, 0.08, 0.271, 0.503, 0.729, 0.915, 1.049, 1.129, 1.161, 1.158, 1.132, 1.095, 1.057, 1.024, 0.999, 0.983, 0.975, 0.974, 0.977, 0.982, 0.988, 0.994, 0.999, 1.002, 1.004, 1.004, 1.004, 1.003, 1.002, 1.001, 1);
   --focus-ring: rgba(255, 255, 255, 0.9);
   /* scene accent, rewritten when the scene changes */
   --accent: #ffcc43;
