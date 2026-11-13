@@ -4,7 +4,9 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import type { UserPrefs } from '@/types/scene';
 import { DEFAULT_PREFS, SCENES } from '@/lib/sceneConfig';
 
-const KEY = 'aura:prefs:v1';
+const KEY = 'relax:prefs:v1';
+/** Key used before the app was renamed from AURA; read once so saved prefs carry over. */
+const LEGACY_KEY = 'aura:prefs:v1';
 
 function sanitize(raw: unknown): UserPrefs {
   const p = { ...DEFAULT_PREFS, settings: { ...DEFAULT_PREFS.settings } };
@@ -33,8 +35,9 @@ export function usePrefs() {
 
   useEffect(() => {
     try {
-      const raw = localStorage.getItem(KEY);
+      const raw = localStorage.getItem(KEY) ?? localStorage.getItem(LEGACY_KEY);
       if (raw) setPrefs(sanitize(JSON.parse(raw)));
+      localStorage.removeItem(LEGACY_KEY);
     } catch {
       /* private mode / corrupted value: keep defaults */
     }

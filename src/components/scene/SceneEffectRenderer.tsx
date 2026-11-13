@@ -58,11 +58,11 @@ export function SceneEffectRenderer({ ready, pos, sceneIndex, layout, tier, redu
           if (!cancelled) engine.start();
         })
         .catch((err) => {
-          console.warn('[AURA] shader compilation failed, using static artwork.', err);
+          console.warn('[Relax] shader compilation failed, using static artwork.', err);
           if (!cancelled) cbRef.current.onFail();
         });
     } catch (err) {
-      console.warn('[AURA] WebGL unavailable, using static artwork.', err);
+      console.warn('[Relax] WebGL unavailable, using static artwork.', err);
       canvas.remove();
       cbRef.current.onFail();
       return;

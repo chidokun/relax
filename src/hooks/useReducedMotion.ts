@@ -20,7 +20,7 @@ export function useReducedMotion(pref: ReducedMotionPref): { reduced: boolean; s
   const system = useSystemReducedMotion();
   const reduced = pref === 'system' ? system : pref === 'on';
   useEffect(() => {
-    document.documentElement.classList.toggle('aura-reduced', reduced);
+    document.documentElement.classList.toggle('relax-reduced', reduced);
   }, [reduced]);
   return { reduced, system };
 }

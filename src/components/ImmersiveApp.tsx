@@ -150,7 +150,7 @@ export function ImmersiveApp() {
 
   return (
     <main className={stageStyles.stage} data-ready={loaded} style={stageVars}>
-      <h1 className="sr-only">AURA — immersive ambient sound</h1>
+      <h1 className="sr-only">Relax — immersive ambient sound</h1>
 
       <AmbientBackdrop sceneIndex={carousel.sceneIndex} />
       <StaticSceneArt layout={layout} sceneIndex={carousel.sceneIndex} visible={!fxReady} />
@@ -184,7 +184,7 @@ export function ImmersiveApp() {
       <header className={dockStyles.rail} data-visible={railVisible}>
         <span className={dockStyles.wordmark}>
           <span className={dockStyles.dot} aria-hidden="true" />
-          AURA
+          RELAX
         </span>
         <button
           type="button"

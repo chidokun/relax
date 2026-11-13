@@ -2,7 +2,7 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "aura-dev",
+      "name": "relax-dev",
       "runtimeExecutable": "npm",
       "runtimeArgs": [
         "run",
@@ -14,7 +14,7 @@
       "port": 3217
     },
     {
-      "name": "aura-prod",
+      "name": "relax-prod",
       "runtimeExecutable": "npx",
       "runtimeArgs": [
         "--yes",

@@ -211,7 +211,7 @@ export class FxEngine {
     }
     this.quad.material = this.fxMat;
     if (process.env.NODE_ENV !== 'production') {
-      console.info(`[AURA] shaders ready in ${Math.round(performance.now() - t0)} ms`);
+      console.info(`[Relax] shaders ready in ${Math.round(performance.now() - t0)} ms`);
     }
   }
 

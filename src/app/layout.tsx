@@ -5,7 +5,7 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans', display: 'swap' });
 
 export const metadata: Metadata = {
-  title: 'AURA — Immersive Ambient Sound',
+  title: 'Relax — Immersive Ambient Sound',
   description: 'Ambient soundscapes for focus, rest and sleep, inside a living light scene.',
   // Relative URLs so the icons resolve under any base path (custom domain or github.io/<repo>/).
   icons: {

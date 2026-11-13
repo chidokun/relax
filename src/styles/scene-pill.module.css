@@ -491,14 +491,14 @@
   }
 }
 
-:global(.aura-reduced) .shell,
-:global(.aura-reduced) .blob,
-:global(.aura-reduced) .icon svg,
-:global(.aura-reduced) .icon svg path {
+:global(.relax-reduced) .shell,
+:global(.relax-reduced) .blob,
+:global(.relax-reduced) .icon svg,
+:global(.relax-reduced) .icon svg path {
   animation: none !important;
 }
 
-:global(.aura-reduced) .tilt,
-:global(.aura-reduced) .icon svg {
+:global(.relax-reduced) .tilt,
+:global(.relax-reduced) .icon svg {
   transform: none !important;
 }

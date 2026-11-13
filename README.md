@@ -1,4 +1,4 @@
-# AURA — Immersive Ambient Music Player
+# Relax — Immersive Ambient Music Player
 
 A single-screen ambient player: a carousel of six soundscapes (Solar, Breeze, Bloom, Ember, Night, Rain),
 each with its own procedural light scene rendered in WebGL, a glossy floor reflection, and a

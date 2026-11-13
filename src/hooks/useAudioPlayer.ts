@@ -46,10 +46,10 @@ export function useAudioPlayer({ scene, volume, muted, onError }: Options) {
         onErrorRef.current('Your browser blocked audio. Press Play to start.');
       } else if (err instanceof AudioUnavailableError) {
         onErrorRef.current(`${sceneTitle} audio unavailable. Please try another scene.`);
-        console.warn(`[AURA] ${err.message} → ${err.src}`);
+        console.warn(`[Relax] ${err.message} → ${err.src}`);
       } else {
         onErrorRef.current('Audio unavailable. Please try another scene.');
-        console.warn('[AURA] audio error', err);
+        console.warn('[Relax] audio error', err);
       }
       engineRef.current?.stopAll();
       engineRef.current?.pause();
