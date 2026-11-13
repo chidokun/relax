@@ -81,6 +81,68 @@ export function RainIcon() {
   );
 }
 
+export function ForestIcon() {
+  return (
+    <svg {...common}>
+      <path d="M32 9l-9 13h5l-10 13h6l-10 13h36l-10-13h6L36 22h5z" />
+      <path d="M32 48v7" />
+      <circle cx="51" cy="17" r="1.7" fill="currentColor" stroke="none" />
+      <circle cx="12.5" cy="26" r="1.4" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+export function BeachIcon() {
+  return (
+    <svg {...common}>
+      <path d="M20 35a12 12 0 0 1 24 0" />
+      <path d="M32 14v4M18.6 20.6l2.8 2.8M45.4 20.6l-2.8 2.8M12 35h3.5M48.5 35h3.5" strokeWidth={2} />
+      <path d="M8 43q4-4 8 0t8 0t8 0t8 0t8 0t8 0" />
+      <path d="M16 51q4-4 8 0t8 0t8 0t8 0" opacity="0.75" />
+    </svg>
+  );
+}
+
+export function UniverseIcon() {
+  return (
+    <svg {...common}>
+      <g transform="rotate(-20 32 32)">
+        <circle cx="32" cy="32" r="10.5" />
+        <path d="M10 32a22 7 0 0 0 44 0" />
+        <path d="M10 32a22 7 0 0 1 10-5.87" />
+        <path d="M44 26.13a22 7 0 0 1 10 5.87" />
+      </g>
+      <path d="M50 9.5v7M46.5 13h7" strokeWidth={1.8} />
+      <path d="M13 47.5v5M10.5 50h5" strokeWidth={1.6} opacity="0.8" />
+    </svg>
+  );
+}
+
+export function DreamIcon() {
+  return (
+    <svg {...common}>
+      <path d="M12 34q18 13 36 0" />
+      <path d="M18.5 38.5l-3 4" strokeWidth={1.9} />
+      <path d="M26 41.2l-1.4 4.6" strokeWidth={1.9} />
+      <path d="M34 41.2l1.4 4.6" strokeWidth={1.9} />
+      <path d="M41.5 38.5l3 4" strokeWidth={1.9} />
+      <path d="M40 13h7l-7 8h7" strokeWidth={2} />
+      <path d="M50.5 24h4.5l-4.5 5.2h4.5" strokeWidth={1.7} opacity="0.8" />
+    </svg>
+  );
+}
+
+export function BirdIcon() {
+  return (
+    <svg {...common}>
+      <path d="M10 52a22 22 0 0 1 44 0" />
+      <path d="M17 52a15 15 0 0 1 30 0" opacity="0.8" />
+      <path d="M24 52a8 8 0 0 1 16 0" opacity="0.6" />
+      <path d="M18 19q7-6 14 2q7-8 14-2" />
+    </svg>
+  );
+}
+
 export function SceneIcon({ id }: { id: SceneId }) {
   switch (id) {
     case 'solar':
@@ -95,5 +157,15 @@ export function SceneIcon({ id }: { id: SceneId }) {
       return <NightIcon />;
     case 'rain':
       return <RainIcon />;
+    case 'forest':
+      return <ForestIcon />;
+    case 'beach':
+      return <BeachIcon />;
+    case 'universe':
+      return <UniverseIcon />;
+    case 'dream':
+      return <DreamIcon />;
+    case 'bird':
+      return <BirdIcon />;
   }
 }

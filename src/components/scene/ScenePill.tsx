@@ -78,7 +78,7 @@ export const ScenePill = forwardRef<HTMLElement, Props>(function ScenePill(
           <span className={styles.rimSpot} />
           {!reflection && (
             <span className={styles.content}>
-              <span className={styles.index}>0{scene.index + 1}</span>
+              <span className={styles.index}>{String(scene.index + 1).padStart(2, '0')}</span>
               <span className={styles.icon}>
                 <SceneIcon id={scene.id} />
               </span>
@@ -98,6 +98,7 @@ export const ScenePill = forwardRef<HTMLElement, Props>(function ScenePill(
         className={styles.pill}
         data-active={active}
         data-hover={hovered || undefined}
+        data-scene={scene.id}
         style={sceneCssVars(scene)}
         aria-hidden="true"
       >

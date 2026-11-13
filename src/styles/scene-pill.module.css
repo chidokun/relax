@@ -215,6 +215,20 @@
   );
 }
 
+/* Bird wears the whole spectrum */
+.pill[data-scene='bird'] .color {
+  background: linear-gradient(
+    172deg,
+    #a352f5 0%,
+    #5252eb 16%,
+    #339eff 32%,
+    #42db6b 48%,
+    #ffdb33 64%,
+    #ff8c24 80%,
+    #ff3d42 100%
+  );
+}
+
 .blob {
   position: absolute;
   border-radius: 50%;
@@ -423,6 +437,104 @@
   animation-delay: -0.6s;
 }
 
+.pill[data-scene='forest'][data-hover] .icon svg {
+  transform-origin: 50% 86%;
+  animation: rustle 2.4s ease-in-out infinite;
+}
+
+.pill[data-scene='forest'][data-hover] .icon svg circle {
+  animation: twinkle 0.9s ease-in-out infinite alternate;
+}
+
+.pill[data-scene='forest'][data-hover] .icon svg circle:nth-of-type(2) {
+  animation-delay: -0.45s;
+}
+
+.pill[data-scene='beach'][data-hover] .icon svg path:nth-child(-n + 2) {
+  transform: translateY(-2.5px);
+  transition: transform 1200ms var(--ease-out-expo);
+}
+
+.pill[data-scene='beach'][data-hover] .icon svg path:nth-child(n + 3) {
+  animation: swell 1.8s ease-in-out infinite;
+}
+
+.pill[data-scene='beach'][data-hover] .icon svg path:nth-child(4) {
+  animation-delay: -0.6s;
+}
+
+.pill[data-scene='universe'][data-hover] .icon svg {
+  transform: rotate(-12deg) scale(1.06);
+}
+
+.pill[data-scene='universe'][data-hover] .icon svg > path {
+  animation: twinkle 1.2s ease-in-out infinite alternate;
+}
+
+.pill[data-scene='universe'][data-hover] .icon svg > path:last-child {
+  animation-delay: -0.6s;
+}
+
+.pill[data-scene='dream'][data-hover] .icon svg path:nth-child(n + 6) {
+  animation: snooze 2.6s ease-in-out infinite;
+}
+
+.pill[data-scene='dream'][data-hover] .icon svg path:nth-child(7) {
+  animation-delay: -1.3s;
+}
+
+@keyframes snooze {
+  0% {
+    transform: translate(0, 0);
+    opacity: 1;
+  }
+  70% {
+    opacity: 0.25;
+  }
+  100% {
+    transform: translate(2px, -5px);
+    opacity: 0;
+  }
+}
+
+.pill[data-scene='bird'][data-hover] .icon svg path:last-child {
+  transform-box: fill-box;
+  transform-origin: 50% 80%;
+  animation: flap 0.45s ease-in-out infinite alternate;
+}
+
+@keyframes flap {
+  from {
+    transform: translateY(0) scaleY(1);
+  }
+  to {
+    transform: translateY(-1.5px) scaleY(0.35);
+  }
+}
+
+@keyframes swell {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(-3px);
+  }
+}
+
+@keyframes rustle {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  30% {
+    transform: rotate(3deg);
+  }
+  65% {
+    transform: rotate(-2deg);
+  }
+}
+
 @keyframes gust {
   0%,
   100% {
@@ -482,7 +594,8 @@
   .shell,
   .blob,
   .icon svg,
-  .icon svg path {
+  .icon svg path,
+  .icon svg circle {
     animation: none !important;
   }
   .tilt,
@@ -494,7 +607,8 @@
 :global(.relax-reduced) .shell,
 :global(.relax-reduced) .blob,
 :global(.relax-reduced) .icon svg,
-:global(.relax-reduced) .icon svg path {
+:global(.relax-reduced) .icon svg path,
+:global(.relax-reduced) .icon svg circle {
   animation: none !important;
 }
 

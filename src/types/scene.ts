@@ -1,4 +1,4 @@
-export type SceneId = 'solar' | 'breeze' | 'bloom' | 'ember' | 'night' | 'rain';
+export type SceneId = 'solar' | 'breeze' | 'bloom' | 'ember' | 'night' | 'rain' | 'forest' | 'beach' | 'universe' | 'dream' | 'bird';
 export type SessionMode = 'focus' | 'relax' | 'sleep';
 export type PlaybackStatus = 'idle' | 'loading' | 'playing' | 'paused' | 'error';
 export type QualityTier = 'high' | 'medium' | 'low' | 'static';
@@ -16,7 +16,7 @@ export interface ScenePalette {
 
 export interface SceneConfig {
   id: SceneId;
-  /** Position in the carousel ring (Solar → Breeze → Bloom → Ember → Night → Rain → Solar). */
+  /** Position in the carousel ring (Solar → Breeze → Bloom → Ember → Night → Rain → Forest → Beach → Universe → Dream → Bird → Solar). */
   index: number;
   title: string;
   caption: string;
@@ -25,7 +25,7 @@ export interface SceneConfig {
   cardBlobs: [string, string, string];
   /** Hue that the bottom of the dark (inactive) pill fades into. */
   sideTint: string;
-  visualEffect: 'rays' | 'wind' | 'lotus' | 'flame' | 'aurora' | 'rain';
+  visualEffect: 'rays' | 'wind' | 'lotus' | 'flame' | 'aurora' | 'rain' | 'canopy' | 'shore' | 'galaxy' | 'breath' | 'flock';
   /** Public URL of the looping soundscape. Missing file => honest "unavailable" state. */
   audioSrc?: string;
 }

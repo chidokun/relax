@@ -87,4 +87,35 @@ const vec3 RAIN_HI   = vec3(0.839, 0.910, 1.000);
 const vec3 RAIN_CORE = vec3(0.231, 0.482, 1.000);
 const vec3 RAIN_SEC  = vec3(0.086, 0.251, 0.784);
 const vec3 RAIN_TOP  = vec3(0.102, 0.173, 0.431);
+
+const vec3 FOREST_AMB  = vec3(0.016, 0.078, 0.039);
+const vec3 FOREST_HI   = vec3(0.851, 1.000, 0.784);
+const vec3 FOREST_CORE = vec3(0.239, 0.745, 0.361);
+const vec3 FOREST_SEC  = vec3(0.078, 0.443, 0.227);
+const vec3 FIREFLY     = vec3(0.860, 1.000, 0.480);
+
+const vec3 BEACH_AMB  = vec3(0.010, 0.045, 0.085);
+const vec3 BEACH_HI   = vec3(1.000, 0.957, 0.824);
+const vec3 BEACH_CORE = vec3(0.180, 0.608, 0.918);
+const vec3 BEACH_SEC  = vec3(0.075, 0.373, 0.690);
+const vec3 SAND       = vec3(0.949, 0.710, 0.267);
+const vec3 SUN        = vec3(1.000, 0.827, 0.420);
+const vec3 GOLD       = vec3(1.000, 0.550, 0.120);
+
+const vec3 UNI_AMB     = vec3(0.024, 0.012, 0.094);
+const vec3 UNI_HI      = vec3(0.902, 0.957, 1.000);
+const vec3 UNI_CORE    = vec3(0.271, 0.784, 1.000);
+const vec3 UNI_SEC     = vec3(0.353, 0.133, 0.784);
+const vec3 NEBULA      = vec3(1.000, 0.360, 0.850);
+const vec3 GALAXY_CORE = vec3(1.000, 0.880, 0.700);
+
+const vec3 DREAM_AMB  = vec3(0.027, 0.039, 0.086);
+const vec3 DREAM_HI   = vec3(0.953, 0.918, 1.000);
+const vec3 DREAM_CORE = vec3(0.561, 0.659, 0.910);
+const vec3 DREAM_SEC  = vec3(0.243, 0.298, 0.549);
+const vec3 PEACH      = vec3(0.949, 0.722, 0.627);
+
+const vec3 BIRD_AMB = vec3(0.043, 0.027, 0.086);
+const vec3 BIRD_HI  = vec3(1.000, 0.973, 0.941);
+const vec3 BIRD_SEC = vec3(0.486, 0.302, 1.000);
 `;

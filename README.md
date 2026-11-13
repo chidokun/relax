@@ -1,6 +1,6 @@
 # Relax — Immersive Ambient Music Player
 
-A single-screen ambient player: a carousel of six soundscapes (Solar, Breeze, Bloom, Ember, Night, Rain),
+A single-screen ambient player: a carousel of eleven soundscapes (Solar, Breeze, Bloom, Ember, Night, Rain, Forest, Beach, Universe, Dream, Bird),
 each with its own procedural light scene rendered in WebGL, a glossy floor reflection, and a
 quiet player dock (play/pause, scene navigation, session timer, mode, volume, settings).
 
@@ -49,6 +49,11 @@ public/audio/bloom.mp3
 public/audio/ember.mp3
 public/audio/night.mp3
 public/audio/rain.mp3
+public/audio/forest.mp3
+public/audio/beach.mp3
+public/audio/universe.mp3
+public/audio/dream.mp3
+public/audio/bird.mp3
 ```
 
 Paths are configured per scene in `src/lib/sceneConfig.ts` (`audioSrc`). Any format the browser
@@ -63,7 +68,7 @@ gesture.
 
 | URL | Effect |
 |---|---|
-| `/?scene=bloom` | open on a given scene (`solar`, `breeze`, `bloom`, `ember`, `night`, `rain`) |
+| `/?scene=bloom` | open on a given scene (`solar`, `breeze`, `bloom`, `ember`, `night`, `rain`, `forest`, `beach`, `universe`, `dream`, `bird`) |
 | `/?quality=static` | force the no-WebGL fallback (SVG artwork) |
 | `/?quality=low` / `medium` / `high` | force a renderer tier |
 
@@ -79,7 +84,7 @@ they can be switched off in Settings.
 
 - **Next.js 16 (App Router) + React 19 + TypeScript**, CSS Modules for layout and tokens.
 - **Motion** drives the carousel position (one motion value) and overlay transitions.
-- **Three.js** renders the light field: one fullscreen shader for all six scenes, crossfaded
+- **Three.js** renders the light field: one fullscreen shader for all eleven scenes, crossfaded
   by per-scene uniforms, followed by bloom/haze blur passes and a composite pass that adds the
   floor reflection, horizon line, vignette, tone-mapping and dithering.
   - Solar — ~260 tapered rays in three layers launched from the capsule outline, 3-tier rim,
@@ -94,6 +99,21 @@ they can be switched off in Settings.
   - Rain — deep-blue rain in three wind-slanted parallax layers (hidden behind the glass, lit
     by the capsule), droplets running down the outline, ripples on the glossy floor, a low
     drifting mist and rare soft sheet lightning in the cloud bank.
+  - Forest — deep-green woodland: two parallax rows of swaying trunks around a clearing (near
+    row back-lit on the edge facing the capsule), light shafts slanting through canopy gaps with
+    glinting dust, blinking fireflies that wake one by one, tumbling leaves and floor moss mist.
+  - Beach — a horizon over a deep-blue sea; a small sun rises out of the water on reveal and
+    lays a glitter path over perspective wave bands, waves wash up a band of golden sand with a
+    lacy foam line, gold-lit wisps drift in the sky and gulls glide past the sun.
+  - Universe — a tilted two-armed spiral galaxy with the capsule as its nucleus (gold core,
+    cyan disc, magenta rim, dust lanes and glinting young stars); the arms unwind into place on
+    reveal; nebulae drift over a two-depth star field and a small ringed planet orbits.
+  - Dream — a breathing guide for falling asleep: the capsule's halo swells on a 4.5 s inhale and settles on a 6 s
+    exhale (≈5.5 breaths/min) with a soft ring travelling out and back; pillowy clouds with lit
+    crowns, slow-rising bokeh motes, a crescent moon and a few faint stars.
+  - Bird — a seven-band rainbow arches over the capsule and sweeps in on reveal; a ribbon of 21
+    glowing birds coloured along the spectrum loops around it with flapping wings, rainbow
+    feathers drift down and the rim carries a slowly turning spectrum.
   - Breeze — potential-flow streamlines around the capsule with noise and local swirls; comet
     highlights travel along the stream, lines draw on during reveal.
 - Each scene's light follows its own pill during a slide, so the outgoing scene leaves with its
@@ -115,7 +135,9 @@ src/
       effects/
         FxEngine.ts       renderer, render targets, tweens, adaptive quality, rAF loop
         SolarEffect.glsl.ts  EmberEffect.glsl.ts  BloomEffect.glsl.ts  BreezeEffect.glsl.ts
-                          NightEffect.glsl.ts  RainEffect.glsl.ts
+                          NightEffect.glsl.ts  RainEffect.glsl.ts  ForestEffect.glsl.ts
+                          BeachEffect.glsl.ts  UniverseEffect.glsl.ts
+                          DreamEffect.glsl.ts  BirdEffect.glsl.ts
         shared/common.glsl.ts  shared/shaders.ts
     player/               PlayerDock, Overlay (popover / bottom sheet), Panels, ToastLayer, icons
   hooks/                  useSceneCarousel, useAudioPlayer, useSessionTimer, useStageLayout,

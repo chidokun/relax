@@ -5,6 +5,11 @@ import { BLOOM_GLSL } from '../BloomEffect.glsl';
 import { BREEZE_GLSL } from '../BreezeEffect.glsl';
 import { NIGHT_GLSL } from '../NightEffect.glsl';
 import { RAIN_GLSL } from '../RainEffect.glsl';
+import { FOREST_GLSL } from '../ForestEffect.glsl';
+import { BEACH_GLSL } from '../BeachEffect.glsl';
+import { UNIVERSE_GLSL } from '../UniverseEffect.glsl';
+import { DREAM_GLSL } from '../DreamEffect.glsl';
+import { BIRD_GLSL } from '../BirdEffect.glsl';
 import { SCENE_COUNT } from '@/lib/sceneConfig';
 
 export const FULLSCREEN_VERT = /* glsl */ `
@@ -23,7 +28,7 @@ ${COMMON_GLSL}
 
 uniform vec2 uRes;        // stage size in CSS px
 uniform float uPx;        // render-target pixels per CSS px
-// one entry per scene, in ring order: solar, breeze, bloom, ember, night, rain
+// one entry per scene, in ring order: solar, breeze, bloom, ember, night, rain, forest, beach, universe, dream, bird
 uniform float uReveal[${SCENE_COUNT}];
 uniform float uAmb[${SCENE_COUNT}];   // ambient tint weights
 uniform float uCX[${SCENE_COUNT}];    // per-scene centre x (follows its pill), CSS px
@@ -39,6 +44,11 @@ ${BLOOM_GLSL}
 ${BREEZE_GLSL}
 ${NIGHT_GLSL}
 ${RAIN_GLSL}
+${FOREST_GLSL}
+${BEACH_GLSL}
+${UNIVERSE_GLSL}
+${DREAM_GLSL}
+${BIRD_GLSL}
 
 vec3 backdrop(vec2 px) {
   vec3 base = vec3(0.016, 0.016, 0.021);
@@ -47,8 +57,8 @@ vec3 backdrop(vec2 px) {
   float r2 = dot(de, de);
   float g1 = exp(-r2 / (2.0 * 230.0 * 230.0));
   float g2 = exp(-r2 / (2.0 * 520.0 * 520.0));
-  vec3 amb = uAmb[0] * SOLAR_AMB + uAmb[1] * BREEZE_AMB + uAmb[2] * BLOOM_AMB + uAmb[3] * EMBER_AMB + uAmb[4] * NIGHT_AMB + uAmb[5] * RAIN_AMB;
-  vec3 core = uAmb[0] * SOLAR_SEC + uAmb[1] * BREEZE_SEC + uAmb[2] * BLOOM_SEC + uAmb[3] * EMBER_SEC + uAmb[4] * NIGHT_SEC + uAmb[5] * RAIN_SEC;
+  vec3 amb = uAmb[0] * SOLAR_AMB + uAmb[1] * BREEZE_AMB + uAmb[2] * BLOOM_AMB + uAmb[3] * EMBER_AMB + uAmb[4] * NIGHT_AMB + uAmb[5] * RAIN_AMB + uAmb[6] * FOREST_AMB + uAmb[7] * BEACH_AMB + uAmb[8] * UNI_AMB + uAmb[9] * DREAM_AMB + uAmb[10] * BIRD_AMB;
+  vec3 core = uAmb[0] * SOLAR_SEC + uAmb[1] * BREEZE_SEC + uAmb[2] * BLOOM_SEC + uAmb[3] * EMBER_SEC + uAmb[4] * NIGHT_SEC + uAmb[5] * RAIN_SEC + uAmb[6] * FOREST_SEC + uAmb[7] * BEACH_SEC + uAmb[8] * UNI_SEC + uAmb[9] * DREAM_SEC + uAmb[10] * BIRD_SEC;
   vec3 c = base + amb * g2 * 1.7 + core * g1 * 0.07;
   // faint vertical light column above the stage, like a soft overhead spot
   float column = exp(-sq(d.x / 300.0)) * (1.0 - smoothstep(-200.0, 420.0, d.y));
@@ -68,6 +78,11 @@ void main() {
   if (uReveal[3] > 0.002) emberFx(col, vec2(px.x - uCX[3], uCY - px.y) / uScale, t, uReveal[3]);
   if (uReveal[4] > 0.002) nightFx(col, vec2(px.x - uCX[4], uCY - px.y) / uScale, t, uReveal[4]);
   if (uReveal[5] > 0.002) rainFx(col, vec2(px.x - uCX[5], uCY - px.y) / uScale, t, uReveal[5]);
+  if (uReveal[6] > 0.002) forestFx(col, vec2(px.x - uCX[6], uCY - px.y) / uScale, t, uReveal[6]);
+  if (uReveal[7] > 0.002) beachFx(col, vec2(px.x - uCX[7], uCY - px.y) / uScale, t, uReveal[7]);
+  if (uReveal[8] > 0.002) universeFx(col, vec2(px.x - uCX[8], uCY - px.y) / uScale, t, uReveal[8]);
+  if (uReveal[9] > 0.002) dreamFx(col, vec2(px.x - uCX[9], uCY - px.y) / uScale, t, uReveal[9]);
+  if (uReveal[10] > 0.002) birdFx(col, vec2(px.x - uCX[10], uCY - px.y) / uScale, t, uReveal[10]);
 
   // soft crop at the viewport edges (never a hard rectangular clip)
   vec2 e = min(px, uRes - px);

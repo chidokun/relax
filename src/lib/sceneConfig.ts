@@ -8,7 +8,9 @@ const audio = (file: string) => `./audio/${file}`;
 
 /**
  * Carousel ring order: right of Solar is Breeze, then Bloom, then Ember, then Night, then Rain,
- * then back to Solar (dusk → night → pre-dawn rain → sunrise).
+ * then Forest, then Beach, then Universe, then Dream, then Bird, then back to Solar (dusk →
+ * night → pre-dawn rain → misty forest → sunrise over the sea → deep space → dreams →
+ * a rainbow at waking → full sun).
  * Audio paths are a convention — drop licensed loops into /public/audio (see README).
  */
 export const SCENES: readonly SceneConfig[] = [
@@ -119,6 +121,96 @@ export const SCENES: readonly SceneConfig[] = [
     cardBlobs: ['#2F5BD6', '#6FA8FF', '#0A2478'],
     sideTint: '#06194F',
     audioSrc: audio('rain.mp3'),
+  },
+  {
+    id: 'forest',
+    index: 6,
+    title: 'Forest',
+    caption: 'WOOD · GROUNDING',
+    visualEffect: 'canopy',
+    palette: {
+      ambient: '#04140A',
+      highlight: '#D9FFC8',
+      core: '#3DBE5C',
+      secondary: '#14713A',
+      top: '#3E8F55',
+      bottom: '#0B4421',
+    },
+    cardBlobs: ['#6FBF5E', '#1E7A44', '#B8E07A'],
+    sideTint: '#0B3A1C',
+    audioSrc: audio('forest.mp3'),
+  },
+  {
+    id: 'beach',
+    index: 7,
+    title: 'Beach',
+    caption: 'SEA · FREEDOM',
+    visualEffect: 'shore',
+    palette: {
+      ambient: '#04121F',
+      highlight: '#FFF4D2',
+      core: '#2E9BEA',
+      secondary: '#135FB0',
+      top: '#2F8FE0',
+      bottom: '#E4A94A',
+    },
+    cardBlobs: ['#7FD3FF', '#F6D27A', '#1B6FC8'],
+    sideTint: '#6B4410',
+    audioSrc: audio('beach.mp3'),
+  },
+  {
+    id: 'universe',
+    index: 8,
+    title: 'Universe',
+    caption: 'COSMOS · WONDER',
+    visualEffect: 'galaxy',
+    palette: {
+      ambient: '#060318',
+      highlight: '#E6F4FF',
+      core: '#45C8FF',
+      secondary: '#5A22C8',
+      top: '#38D6F5',
+      bottom: '#7A2BD9',
+    },
+    cardBlobs: ['#FF6FD8', '#3AE0FF', '#6B3CFF'],
+    sideTint: '#2A0E5C',
+    audioSrc: audio('universe.mp3'),
+  },
+  {
+    id: 'dream',
+    index: 9,
+    title: 'Dream',
+    caption: 'SLEEP · REST',
+    visualEffect: 'breath',
+    palette: {
+      ambient: '#070A16',
+      highlight: '#F3EAFF',
+      core: '#8FA8E8',
+      secondary: '#3E4C8C',
+      top: '#7D8FD6',
+      bottom: '#E3A99A',
+    },
+    cardBlobs: ['#B9A6F0', '#F5C2B0', '#5D6FC2'],
+    sideTint: '#2A2350',
+    audioSrc: audio('dream.mp3'),
+  },
+  {
+    id: 'bird',
+    index: 10,
+    title: 'Bird',
+    caption: 'WINGS · JOY',
+    visualEffect: 'flock',
+    palette: {
+      ambient: '#0B0716',
+      highlight: '#FFF8F0',
+      core: '#FFB547',
+      secondary: '#7C4DFF',
+      top: '#8B5CF6',
+      bottom: '#FF6B3D',
+    },
+    cardBlobs: ['#FFD93B', '#38D97A', '#3B9BFF'],
+    sideTint: '#4A1D5E',
+    audioSrc: audio('bird.mp3'),
   },
 ] as const;
 

@@ -33,6 +33,11 @@ const SCENE_TINTS: [number, number, number][] = [
   [1.0, 0.32, 0.16], // ember
   [0.6, 0.48, 1.0], // night
   [0.23, 0.48, 1.0], // rain
+  [0.24, 0.75, 0.36], // forest
+  [0.95, 0.74, 0.34], // beach (sand line)
+  [0.45, 0.62, 1.0], // universe
+  [0.62, 0.66, 0.95], // dream
+  [0.9, 0.78, 1.0], // bird
 ];
 
 const N = SCENE_COUNT;
