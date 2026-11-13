@@ -1,0 +1,270 @@
+.pill {
+  position: absolute;
+  left: var(--cx);
+  top: var(--cy);
+  width: var(--pill-w);
+  height: var(--pill-h);
+  margin: calc(var(--pill-h) / -2) 0 0 calc(var(--pill-w) / -2);
+  padding: 0;
+  border: 0;
+  background: none;
+  border-radius: 999px;
+  transform: translate3d(calc(var(--o, 0) * var(--gap)), 0, 0) scale(calc(1 - 0.054 * var(--abso, 0)));
+  opacity: var(--vis, 1);
+  cursor: pointer;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  will-change: transform, opacity;
+}
+
+.pill:focus-visible {
+  outline: none;
+}
+
+.pill:focus-visible::after {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border-radius: 999px;
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 0;
+}
+
+.shell {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  overflow: hidden;
+  isolation: isolate;
+  transform: translateZ(0);
+  transition:
+    transform var(--motion-short) ease-out,
+    filter var(--motion-short) ease-out;
+}
+
+.pill[data-active='false']:hover .shell {
+  transform: translateY(-3px);
+  filter: brightness(1.07);
+}
+
+.pill[data-active='false']:active .shell {
+  transform: scale(0.98);
+  transition-duration: 100ms;
+}
+
+.pill[data-active='true'] .shell {
+  animation: breathe 5.2s ease-in-out infinite;
+}
+
+.pill[data-active='true']:hover .rimLit {
+  filter: brightness(1.04);
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.012);
+  }
+}
+
+/* inactive body: black upper half, sunk hue at the bottom */
+.base {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(90% 38% at 50% 100%, color-mix(in oklab, var(--tint) 85%, transparent) 0%, transparent 100%),
+    linear-gradient(
+      180deg,
+      #050506 0%,
+      #050506 47%,
+      color-mix(in oklab, var(--tint) 42%, #050506) 72%,
+      color-mix(in oklab, var(--tint) 90%, #050506) 100%
+    );
+}
+
+/* active body: multi-hue gradient with drifting colour blobs */
+.color {
+  position: absolute;
+  inset: 0;
+  opacity: var(--a, 0);
+  background: linear-gradient(
+    172deg,
+    var(--top) 0%,
+    color-mix(in oklch, var(--top) 50%, var(--bottom)) 50%,
+    var(--bottom) 100%
+  );
+}
+
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.85;
+  will-change: transform;
+}
+
+.b1 {
+  width: 120%;
+  height: 70%;
+  left: -55%;
+  top: 18%;
+  background: radial-gradient(closest-side, var(--blob1) 0%, color-mix(in oklab, var(--blob1) 50%, transparent) 50%, transparent 100%);
+  animation: drift1 11s ease-in-out infinite alternate;
+}
+
+.b2 {
+  width: 110%;
+  height: 65%;
+  right: -55%;
+  top: -12%;
+  background: radial-gradient(closest-side, var(--blob2) 0%, color-mix(in oklab, var(--blob2) 50%, transparent) 50%, transparent 100%);
+  animation: drift2 8.5s ease-in-out infinite alternate;
+}
+
+.b3 {
+  width: 130%;
+  height: 60%;
+  left: -15%;
+  bottom: -30%;
+  background: radial-gradient(closest-side, var(--blob3) 0%, color-mix(in oklab, var(--blob3) 50%, transparent) 50%, transparent 100%);
+  animation: drift3 13s ease-in-out infinite alternate;
+}
+
+.pill[data-active='false'] .blob {
+  animation-play-state: paused;
+}
+
+@keyframes drift1 {
+  to {
+    transform: translate(14%, -9%) scale(1.08);
+  }
+}
+
+@keyframes drift2 {
+  to {
+    transform: translate(-12%, 12%) scale(0.92);
+  }
+}
+
+@keyframes drift3 {
+  to {
+    transform: translate(8%, -6%) scale(1.1);
+  }
+}
+
+.sheen {
+  position: absolute;
+  inset: 0;
+  opacity: calc(var(--a, 0) * 0.85);
+  background:
+    radial-gradient(110% 45% at 50% 0%, rgba(255, 255, 255, 0.38) 0%, transparent 70%),
+    radial-gradient(120% 30% at 50% 100%, rgba(255, 255, 255, 0.12) 0%, transparent 70%);
+}
+
+.rimDim {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  opacity: calc(1 - var(--a, 0));
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.075),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
+}
+
+.rimLit {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  opacity: var(--a, 0);
+  box-shadow:
+    inset 0 0 0 1.5px rgba(255, 255, 255, 0.78),
+    inset 0 0 8px 2px color-mix(in srgb, var(--highlight) 80%, transparent),
+    inset 0 0 26px 5px color-mix(in srgb, var(--core) 35%, transparent);
+}
+
+.content {
+  position: absolute;
+  inset: 0;
+  color: rgba(255, 255, 255, 0.96);
+  pointer-events: none;
+}
+
+.index {
+  position: absolute;
+  top: 6.4%;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: calc(8.5px * var(--ps));
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  opacity: 0.55;
+}
+
+.icon {
+  position: absolute;
+  left: 50%;
+  top: 42.5%;
+  width: calc(52px * var(--ps));
+  height: calc(52px * var(--ps));
+  transform: translate(-50%, -50%);
+  color: rgba(255, 251, 244, 0.95);
+  filter: drop-shadow(0 1px 1.5px rgba(0, 0, 0, 0.18));
+}
+
+.icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.title {
+  position: absolute;
+  top: 69.5%;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: clamp(17px, calc(22px * var(--ps)), 24px);
+  line-height: 1;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.22);
+}
+
+.caption {
+  position: absolute;
+  top: 80.6%;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: clamp(7px, calc(7.5px * var(--ps)), 9px);
+  line-height: 1;
+  font-weight: 500;
+  letter-spacing: 0.26em;
+  opacity: 0.72;
+  white-space: nowrap;
+}
+
+@media (prefers-contrast: more) {
+  .caption,
+  .index {
+    opacity: 1;
+  }
+  .rimDim {
+    box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.4);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shell,
+  .blob {
+    animation: none !important;
+  }
+}
+
+:global(.aura-reduced) .shell,
+:global(.aura-reduced) .blob {
+  animation: none !important;
+}

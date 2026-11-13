@@ -1,0 +1,124 @@
+.stage {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100dvh;
+  overflow: hidden;
+  background: var(--bg);
+  overscroll-behavior: none;
+  user-select: none;
+  -webkit-user-select: none;
+  opacity: 0;
+  transition: opacity 700ms ease;
+}
+
+.stage[data-ready='true'] {
+  opacity: 1;
+}
+
+/* ---------- Z1: CSS ambient (fallback + first paint, covered by the canvas when WebGL runs) ---------- */
+.backdrop {
+  position: absolute;
+  inset: 0;
+}
+
+.backdropLayer {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 1000ms ease-in-out;
+  background:
+    radial-gradient(ellipse 48% 55% at 50% var(--cy-pct), var(--amb-core) 0%, transparent 70%),
+    radial-gradient(ellipse 80% 90% at 50% var(--cy-pct), var(--amb) 0%, transparent 75%);
+}
+
+.backdropLayer[data-active='true'] {
+  opacity: 1;
+}
+
+/* ---------- Z3: light field ---------- */
+.fxHost {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.fxCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  opacity: 0;
+  transition: opacity 600ms ease;
+}
+
+.fxHost[data-ready='true'] .fxCanvas {
+  opacity: 1;
+}
+
+.staticArt {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transition: opacity 600ms ease;
+}
+
+.staticArt[data-visible='false'] {
+  opacity: 0;
+}
+
+.staticScene {
+  opacity: 0;
+  transition: opacity 700ms ease-in-out;
+}
+
+.staticScene[data-active='true'] {
+  opacity: 1;
+}
+
+/* ---------- Z4–Z7: pills ---------- */
+.carousel {
+  position: absolute;
+  inset: 0;
+  touch-action: none;
+}
+
+/* ---------- Z9: mirrored pills on the glossy floor ---------- */
+.reflection {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent calc(var(--floor-y) + 2px),
+    rgba(0, 0, 0, 0.9) calc(var(--floor-y) + 10px),
+    transparent calc(var(--floor-y) + var(--pill-h) * 0.7)
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent calc(var(--floor-y) + 2px),
+    rgba(0, 0, 0, 0.9) calc(var(--floor-y) + 10px),
+    transparent calc(var(--floor-y) + var(--pill-h) * 0.7)
+  );
+}
+
+.reflectionFlip {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% var(--floor-y);
+  transform: scaleY(-1);
+  filter: blur(calc(13px * var(--ps)));
+  opacity: 0.32;
+}
+
+.reduced .reflectionFlip,
+.reflectionFlip * {
+  animation: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stage {
+    transition-duration: 150ms;
+  }
+}

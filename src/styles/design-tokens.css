@@ -1,0 +1,32 @@
+:root {
+  --bg: #050507;
+  --text: #f7f6f8;
+  --muted-text: rgba(255, 255, 255, 0.58);
+  --panel: rgba(15, 16, 20, 0.7);
+  --glass: rgba(8, 10, 13, 0.68);
+  --hairline: rgba(255, 255, 255, 0.1);
+  --card-black: #040507;
+  --pill-width: 184px;
+  --pill-height: 284px;
+  --pill-radius: 100px;
+  --side-distance: 344px;
+  --motion-short: 180ms;
+  --motion-medium: 480ms;
+  --motion-scene: 850ms;
+  --motion-long: 1200ms;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-hero: cubic-bezier(0.22, 0.78, 0.17, 1);
+  --ease-overlay: cubic-bezier(0.22, 1, 0.36, 1);
+  --focus-ring: rgba(255, 255, 255, 0.9);
+  /* scene accent, rewritten when the scene changes */
+  --accent: #ffcc43;
+  --accent-hi: #fff3b6;
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --muted-text: rgba(255, 255, 255, 0.85);
+    --hairline: rgba(255, 255, 255, 0.35);
+    --glass: rgba(6, 7, 9, 0.94);
+  }
+}
