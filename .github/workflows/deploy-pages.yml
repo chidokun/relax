@@ -42,8 +42,7 @@ jobs:
       - name: Build static export
         run: npm run build
         env:
-          # "/<repo>" for project sites, "" for <user>.github.io
-          PAGES_BASE_PATH: ${{ steps.pages.outputs.base_path }}
+          # no base path needed: asset URLs are relative (see next.config.ts)
           NEXT_TELEMETRY_DISABLED: 1
 
       - name: Upload artifact

@@ -30,16 +30,13 @@ One-time setup:
 3. Push to `main`. The workflow typechecks, builds and publishes `out/`; the run summary shows
    the site URL (`https://<user>.github.io/<repo>/`).
 
-The base path is detected automatically: `actions/configure-pages` reports `/<repo>` for a
-project site (or nothing for a `<user>.github.io` repo) and the build receives it as
-`PAGES_BASE_PATH`. To test a project-site build locally:
+The build is base-path independent: every asset URL is relative (`assetPrefix: './'` in
+`next.config.ts`, audio as `./audio/<file>`). The same `out/` works on a custom domain at `/`
+(e.g. `relax.nguyentuan.dev`) and on `https://<user>.github.io/<repo>/`; nothing has to be
+rebuilt when a custom domain is added or removed. When a custom domain is set, GitHub
+redirects the `github.io/<repo>/` URL to it.
 
-```bash
-PAGES_BASE_PATH=/relax npm run build
-```
-
-Audio files in `public/audio/` are published with the site; their URLs get the base path
-automatically. Commit only files you have the right to redistribute publicly.
+Audio files in `public/audio/` are published with the site. Commit only files you have the right to redistribute publicly.
 
 ## Audio assets (required for playback)
 

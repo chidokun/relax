@@ -1,8 +1,10 @@
 import type { SceneConfig, SceneId, SessionMode, UserPrefs } from '@/types/scene';
 
-/** Prefix for runtime-fetched public assets (GitHub Pages serves the app under /<repo>). */
-const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
-const audio = (file: string) => `${BASE_PATH}/audio/${file}`;
+/**
+ * Relative to the page, so audio resolves under whatever path the site is served from
+ * ("/" on a custom domain, "/<repo>/" on <user>.github.io).
+ */
+const audio = (file: string) => `./audio/${file}`;
 
 /**
  * Carousel ring order: right of Solar is Breeze, then Bloom, then Ember, then back to Solar.

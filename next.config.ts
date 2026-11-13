@@ -1,20 +1,19 @@
 import type { NextConfig } from 'next';
 
 /**
- * Fully static export (no server needed) so the app can be hosted on GitHub Pages.
- * PAGES_BASE_PATH is set by the deploy workflow from actions/configure-pages:
- * "/<repo>" for project sites, "" for <user>.github.io sites and local builds.
+ * Fully static export (no server needed) for GitHub Pages.
+ *
+ * Asset URLs are relative ("./_next/...") instead of tied to one base path, so the same build
+ * works wherever index.html is served: a custom domain at "/" (relax.nguyentuan.dev),
+ * a project site at "/relax/" (<user>.github.io/relax/), or `npm start` locally.
+ * This is safe because the app is a single page served from the export root.
  */
-const basePath = (process.env.PAGES_BASE_PATH ?? '').replace(/\/$/, '');
-
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   output: 'export',
-  basePath,
+  assetPrefix: './',
   trailingSlash: true,
   images: { unoptimized: true },
-  // exposed to client code for assets fetched at runtime (audio)
-  env: { NEXT_PUBLIC_BASE_PATH: basePath },
 };
 
 export default nextConfig;
