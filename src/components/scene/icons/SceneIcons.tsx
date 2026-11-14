@@ -143,6 +143,19 @@ export function BirdIcon() {
   );
 }
 
+/** Sun half-risen over the horizon, morning mist below. */
+export function MorningIcon() {
+  return (
+    <svg {...common}>
+      <path d="M20 40a12 12 0 0 1 24 0" />
+      <path d="M32 16v4.5M18.6 22.6l3 3M45.4 22.6l-3 3" strokeWidth={2} />
+      <path d="M8 40h48" />
+      <path d="M14 47.5h21M40.5 47.5h9" strokeWidth={1.9} opacity="0.8" />
+      <path d="M22 54.5h20" strokeWidth={1.8} opacity="0.6" />
+    </svg>
+  );
+}
+
 export function SceneIcon({ id }: { id: SceneId }) {
   switch (id) {
     case 'solar':
@@ -167,5 +180,7 @@ export function SceneIcon({ id }: { id: SceneId }) {
       return <DreamIcon />;
     case 'bird':
       return <BirdIcon />;
+    case 'morning':
+      return <MorningIcon />;
   }
 }

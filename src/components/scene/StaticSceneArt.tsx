@@ -434,8 +434,47 @@ function BirdArt({ floor }: { floor: number }) {
   );
 }
 
+function MorningArt({ floor }: { floor: number }) {
+  const hz = floor - 36; // horizon, just above the floor (y grows downward here)
+  const dew = useMemo(() => {
+    const rnd = seededRandom(113);
+    const r2 = (v: number) => Math.round(v * 100) / 100;
+    return Array.from({ length: 14 }, (_, i) => ({
+      x: r2((i % 2 === 0 ? 1 : -1) * (120 + rnd() * 220)),
+      y: r2(floor - 20 - rnd() * 320),
+      r: r2(0.9 + rnd() * 1.2),
+      o: r2(0.35 + rnd() * 0.45),
+    }));
+  }, [floor]);
+  const mist = [0, 1, 2, 3].map((i) => ({ y: hz - 14 - i * 50, rx: 300 - i * 30, o: 0.3 - i * 0.05 }));
+  return (
+    <g>
+      <ellipse cy={hz - 120} rx="320" ry="300" fill="url(#morningSky)" />
+      <clipPath id="morningAbove">
+        <rect x="-400" y="-500" width="800" height={hz + 500} />
+      </clipPath>
+      <g clipPath="url(#morningAbove)">
+        <circle cy={hz - 66} r="230" fill="url(#morningSunGlow)" />
+        <circle cy={hz - 66} r="148" fill="url(#morningSun)" />
+      </g>
+      <rect x="-260" y={hz - 81} width="520" height="1.2" fill="#FFF6E8" opacity="0.35" filter="url(#softBlur)" />
+      <g filter="url(#midBlur)">
+        {mist.map((m, i) => (
+          <ellipse key={i} cy={m.y} rx={m.rx} ry="9" fill={i < 2 ? '#F07FA0' : '#A9D4F5'} opacity={m.o} />
+        ))}
+      </g>
+      <g fill="#FFF6E8">
+        {dew.map((d, i) => (
+          <circle key={i} cx={d.x} cy={d.y} r={d.r} opacity={d.o} />
+        ))}
+      </g>
+      <rect x="-95" y="-145" width="190" height="290" rx="95" fill="none" stroke="url(#morningRim)" strokeWidth="4" filter="url(#softBlur)" />
+    </g>
+  );
+}
+
 // ring order, same as SCENES
-const ART: ComponentType<{ floor: number }>[] = [SolarArt, BreezeArt, BloomArt, EmberArt, NightArt, RainArt, ForestArt, BeachArt, UniverseArt, DreamArt, BirdArt];
+const ART: ComponentType<{ floor: number }>[] = [SolarArt, BreezeArt, BloomArt, EmberArt, NightArt, RainArt, ForestArt, BeachArt, UniverseArt, DreamArt, BirdArt, MorningArt];
 
 export const StaticSceneArt = memo(function StaticSceneArt({ layout, sceneIndex, visible }: { layout: StageLayout; sceneIndex: number; visible: boolean }) {
   const { width, height, cx, cy, scale, floorY } = layout;
@@ -498,6 +537,24 @@ export const StaticSceneArt = memo(function StaticSceneArt({ layout, sceneIndex,
           <stop offset="0.5" stopColor="#7C4DFF" stopOpacity="0.1" />
           <stop offset="1" stopColor="#0B0716" stopOpacity="0" />
         </radialGradient>
+        <radialGradient id="morningSky">
+          <stop offset="0" stopColor="#FFB38A" stopOpacity="0.3" />
+          <stop offset="0.5" stopColor="#F07FA0" stopOpacity="0.12" />
+          <stop offset="1" stopColor="#140C12" stopOpacity="0" />
+        </radialGradient>
+        <radialGradient id="morningSun">
+          <stop offset="0" stopColor="#FFF6E8" stopOpacity="0.6" />
+          <stop offset="0.6" stopColor="#FFD1A8" stopOpacity="0.45" />
+          <stop offset="1" stopColor="#FFB38A" stopOpacity="0.35" />
+        </radialGradient>
+        <radialGradient id="morningSunGlow">
+          <stop offset="0.6" stopColor="#FFB38A" stopOpacity="0.35" />
+          <stop offset="1" stopColor="#F07FA0" stopOpacity="0" />
+        </radialGradient>
+        <linearGradient id="morningRim" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#A9D4F5" />
+          <stop offset="1" stopColor="#FFCC78" />
+        </linearGradient>
         <radialGradient id="dreamHalo">
           <stop offset="0" stopColor="#F2B8A0" stopOpacity="0.28" />
           <stop offset="0.45" stopColor="#8FA8E8" stopOpacity="0.14" />

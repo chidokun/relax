@@ -638,6 +638,24 @@
   animation: flap 0.45s ease-in-out infinite alternate;
 }
 
+/* Morning: the sun lifts off the horizon, rays brighten, the mist drifts */
+.pill[data-scene='morning'][data-hover] .icon svg path:nth-child(-n + 2) {
+  transform: translateY(-2.5px);
+  transition: transform 1400ms var(--ease-spring);
+}
+
+.pill[data-scene='morning'][data-hover] .icon svg path:nth-child(2) {
+  animation: twinkle 1.6s ease-in-out infinite alternate;
+}
+
+.pill[data-scene='morning'][data-hover] .icon svg path:nth-child(n + 4) {
+  animation: swell 3.2s ease-in-out infinite;
+}
+
+.pill[data-scene='morning'][data-hover] .icon svg path:nth-child(5) {
+  animation-delay: -1.6s;
+}
+
 @keyframes flap {
   from {
     transform: translateY(0) scaleY(1);

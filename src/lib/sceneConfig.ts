@@ -8,9 +8,9 @@ const audio = (file: string) => `./audio/${file}`;
 
 /**
  * Carousel ring order: right of Solar is Breeze, then Bloom, then Ember, then Night, then Rain,
- * then Forest, then Beach, then Universe, then Dream, then Bird, then back to Solar (dusk →
- * night → pre-dawn rain → misty forest → sunrise over the sea → deep space → dreams →
- * a rainbow at waking → full sun).
+ * then Forest, then Beach, then Universe, then Dream, then Bird, then Morning, then back to Solar
+ * (dusk → night → pre-dawn rain → misty forest → sunrise over the sea → deep space → dreams →
+ * a rainbow at waking → a pastel dawn → full sun).
  * Audio paths are a convention — drop licensed loops into /public/audio (see README).
  */
 export const SCENES: readonly SceneConfig[] = [
@@ -211,6 +211,24 @@ export const SCENES: readonly SceneConfig[] = [
     cardBlobs: ['#FFD93B', '#38D97A', '#3B9BFF'],
     sideTint: '#4A1D5E',
     audioSrc: audio('bird.mp3'),
+  },
+  {
+    id: 'morning',
+    index: 11,
+    title: 'Morning',
+    caption: 'DAWN · HOPE',
+    visualEffect: 'dawn',
+    palette: {
+      ambient: '#140C12',
+      highlight: '#FFF6E8',
+      core: '#FFB38A',
+      secondary: '#F07FA0',
+      top: '#A9D4F5',
+      bottom: '#FFB27F',
+    },
+    cardBlobs: ['#F6A6C1', '#FFE0A8', '#B9DDF7'],
+    sideTint: '#5C2A3C',
+    audioSrc: audio('morning.mp3'),
   },
 ] as const;
 

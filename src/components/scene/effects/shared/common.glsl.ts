@@ -118,4 +118,11 @@ const vec3 PEACH      = vec3(0.949, 0.722, 0.627);
 const vec3 BIRD_AMB = vec3(0.043, 0.027, 0.086);
 const vec3 BIRD_HI  = vec3(1.000, 0.973, 0.941);
 const vec3 BIRD_SEC = vec3(0.486, 0.302, 1.000);
+
+const vec3 MORNING_AMB   = vec3(0.078, 0.047, 0.071);
+const vec3 MORNING_HI    = vec3(1.000, 0.965, 0.910);
+const vec3 MORNING_CORE  = vec3(1.000, 0.702, 0.541);
+const vec3 MORNING_SEC   = vec3(0.941, 0.498, 0.627);
+const vec3 MORNING_SKY   = vec3(0.663, 0.831, 0.961);
+const vec3 MORNING_GOLD  = vec3(1.000, 0.800, 0.470);
 `;

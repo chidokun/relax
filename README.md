@@ -1,6 +1,6 @@
 # Relax — Immersive Ambient Music Player
 
-A single-screen ambient player: a carousel of eleven soundscapes (Solar, Breeze, Bloom, Ember, Night, Rain, Forest, Beach, Universe, Dream, Bird),
+A single-screen ambient player: a carousel of twelve soundscapes (Solar, Breeze, Bloom, Ember, Night, Rain, Forest, Beach, Universe, Dream, Bird, Morning),
 each with its own procedural light scene rendered in WebGL, a glossy floor reflection, and a
 quiet player dock (play/pause, scene navigation, session timer, mode, volume, settings).
 
@@ -54,6 +54,7 @@ public/audio/beach.mp3
 public/audio/universe.mp3
 public/audio/dream.mp3
 public/audio/bird.mp3
+public/audio/morning.mp3
 ```
 
 Paths are configured per scene in `src/lib/sceneConfig.ts` (`audioSrc`). Any format the browser
@@ -68,7 +69,7 @@ gesture.
 
 | URL | Effect |
 |---|---|
-| `/?scene=bloom` | open on a given scene (`solar`, `breeze`, `bloom`, `ember`, `night`, `rain`, `forest`, `beach`, `universe`, `dream`, `bird`) |
+| `/?scene=bloom` | open on a given scene (`solar`, `breeze`, `bloom`, `ember`, `night`, `rain`, `forest`, `beach`, `universe`, `dream`, `bird`, `morning`) |
 | `/?quality=static` | force the no-WebGL fallback (SVG artwork) |
 | `/?quality=low` / `medium` / `high` | force a renderer tier |
 
@@ -84,7 +85,7 @@ they can be switched off in Settings.
 
 - **Next.js 16 (App Router) + React 19 + TypeScript**, CSS Modules for layout and tokens.
 - **Motion** drives the carousel position (one motion value) and overlay transitions.
-- **Three.js** renders the light field: one fullscreen shader for all eleven scenes, crossfaded
+- **Three.js** renders the light field: one fullscreen shader for all twelve scenes, crossfaded
   by per-scene uniforms, followed by bloom/haze blur passes and a composite pass that adds the
   floor reflection, horizon line, vignette, tone-mapping and dithering.
   - Solar — ~260 tapered rays in three layers launched from the capsule outline, 3-tier rim,
@@ -114,6 +115,10 @@ they can be switched off in Settings.
   - Bird — a seven-band rainbow arches over the capsule and sweeps in on reveal; a ribbon of 21
     glowing birds coloured along the spectrum loops around it with flapping wings, rainbow
     feathers drift down and the rim carries a slowly turning spectrum.
+  - Morning — a pastel dawn: a large soft sun rises behind the capsule on reveal and peeks out on
+    both sides, the sky washes from rose at the horizon to pale blue, thin mist layers drift
+    across the sun, a faint haze glint runs through it, dew motes rise and the rim fades from
+    gold at the bottom to sky blue at the top.
   - Breeze — potential-flow streamlines around the capsule with noise and local swirls; comet
     highlights travel along the stream, lines draw on during reveal.
 - Each scene's light follows its own pill during a slide, so the outgoing scene leaves with its
@@ -137,7 +142,7 @@ src/
         SolarEffect.glsl.ts  EmberEffect.glsl.ts  BloomEffect.glsl.ts  BreezeEffect.glsl.ts
                           NightEffect.glsl.ts  RainEffect.glsl.ts  ForestEffect.glsl.ts
                           BeachEffect.glsl.ts  UniverseEffect.glsl.ts
-                          DreamEffect.glsl.ts  BirdEffect.glsl.ts
+                          DreamEffect.glsl.ts  BirdEffect.glsl.ts  MorningEffect.glsl.ts
         shared/common.glsl.ts  shared/shaders.ts
     player/               PlayerDock, Overlay (popover / bottom sheet), Panels, ToastLayer, icons
   hooks/                  useSceneCarousel, useAudioPlayer, useSessionTimer, useStageLayout,
